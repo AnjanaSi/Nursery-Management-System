@@ -1,0 +1,18 @@
+
+# IntelliJ / Java
+backend/target/
+backend/.idea/
+backend/*.iml
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env*
+!frontend/.env.example
+
+# Logs
+*.log
+
+# OS / Editor
+.vscode/
