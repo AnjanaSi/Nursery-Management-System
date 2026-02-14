@@ -37,7 +37,16 @@ You are a world-class UI/UX designer. When creating components:
 - Forms must show validation feedback.
 - Avoid dense tables on mobile.
 
-## Images
+## Images & Branding
 
-- Use placeholders for logo and gallery images.
-- Ensure graceful fallback if image missing.
+- Use nursery logo from assets folder.
+- Use image placeholders if real images are missing.
+- Maintain correct image aspect ratios.
+- Never stretch logos.
+
+## Public Landing Page Experience
+
+- One-page scrollable layout.
+- Smooth scrolling to sections from navbar links.
+- Clear call-to-action buttons (Login / Contact).
+- Hero section should feel welcoming for parents.

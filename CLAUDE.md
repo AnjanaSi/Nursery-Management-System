@@ -101,6 +101,37 @@ Use consistent packages under `com.merrykids.backend`:
 - Keep API calls in `src/services/api/` (Axios client)
 - Use Bootstrap 5 patterns consistently (forms, tables, modals, alerts, spinners)
 
+### Branding
+
+- Use MerryKids brand colors based on logo:
+  - Primary: Blue
+  - Accent: Pink
+  - Support: Soft white / light gray backgrounds
+- Avoid green color themes.
+- UI should feel warm, playful, friendly (nursery style) but still professional.
+- Use the actual nursery logo in:
+  - Navbar
+  - Login page
+  - Public landing page hero area
+
+### Public Website (Landing Page)
+
+- Public website is STATIC content only (no dynamic news/events APIs).
+- Landing page follows a modern scrollable one-page structure.
+- Sticky navbar must remain visible while scrolling.
+- Navbar links should smooth-scroll to sections on the same page.
+- Include Login button in the navbar.
+- Sections should appear in sequence when scrolling (e.g. About, Programs, Gallery, Contact).
+
+### Styling
+
+- Bootstrap should handle layout and base components.
+- Custom CSS files are encouraged for polished UI.
+- Use:
+  - `src/styles/global.css` for theme variables and shared styles.
+  - Component/page specific CSS when needed.
+- Avoid overly complex CSS frameworks.
+
 ### Git Workflow
 
 - Use feature branches: `feature/<name>`
