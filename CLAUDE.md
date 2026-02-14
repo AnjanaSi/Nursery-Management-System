@@ -78,16 +78,6 @@ Secure portal (role-based):
 - Preferred: invite-only onboarding (admin triggers invite; parent sets password).
 - Roles: ADMIN, TEACHER, PARENT. Public has no login.
 
-### API Standards
-
-- Use DTOs for requests/responses (do not expose entities directly).
-- Standard JSON response format:
-  - Success: `{ "success": true, "data": ... }`
-  - Error: `{ "success": false, "error": "message" }`
-- Use proper HTTP codes (400 validation, 401 unauthenticated, 403 unauthorized, 404 not found, 500 server).
-- Validate inputs using Bean Validation (`@Valid`, `@NotNull`, etc.).
-- Add a global exception handler (`@ControllerAdvice`) for consistent error responses.
-
 ### Backend Structure
 
 Use consistent packages under `com.merrykids.backend`:
@@ -111,46 +101,6 @@ Use consistent packages under `com.merrykids.backend`:
 - Keep API calls in `src/services/api/` (Axios client)
 - Use Bootstrap 5 patterns consistently (forms, tables, modals, alerts, spinners)
 
-## UI/UX Guidelines (Nursery-Friendly Design)
-
-- Overall vibe: warm, friendly, modern, playful but professional (not childish, not corporate).
-- Use Bootstrap 5 consistently; avoid mixing UI libraries.
-- Design principles:
-  - Plenty of whitespace and clear layout
-  - Rounded corners (e.g., `rounded-3`)
-  - Soft shadows (`shadow-sm`) for cards
-  - Consistent spacing (`py-`, `px-`, `gap-`)
-  - Consistent typography (Bootstrap defaults OK, avoid too many fonts)
-- Use a consistent layout:
-  - Public site: top navbar + hero section + sections/cards
-  - Secure portal: sidebar (or top nav) + page header + content area
-- Use images:
-  - Keep a placeholder logo at `frontend/src/assets/logo.png` (or `/public/logo.png`)
-  - Use placeholder nursery photos in `/public/images/` (e.g., classroom.jpg, playtime.jpg)
-  - All images should be referenced via relative paths and should not break if missing (use fallbacks).
-- Provide UX states everywhere:
-  - Loading spinners
-  - Empty states ("No notices yet")
-  - Friendly error alerts
-- Forms should be clean:
-  - Use Bootstrap form controls
-  - Inline validation messages
-  - Disable submit button while submitting
-
-## Responsive Design Requirement (Mandatory)
-
-- The application must be fully responsive and usable on:
-  - Desktop (≥1200px)
-  - Tablet (768px–1199px)
-  - Mobile (<768px)
-- Use Bootstrap 5 responsive grid system (`container`, `row`, `col-*`).
-- Use responsive navbar with collapse toggle for small screens.
-- Avoid fixed widths unless necessary.
-- Tables must be wrapped in `table-responsive`.
-- Forms must stack vertically on small screens.
-- Sidebar (if used) must collapse or convert to top navigation on mobile.
-- Test layouts using browser responsive mode before finalizing components.
-
 ### Git Workflow
 
 - Use feature branches: `feature/<name>`
@@ -168,3 +118,7 @@ Use consistent packages under `com.merrykids.backend`:
 - Use a DevDataSeeder (CommandLineRunner) that runs only when `app.seed.enabled=true`.
 - Seed at least: 1 admin, 1 teacher, 1 parent, 1 student, 1 admission application, 1 notice, 1 resource.
 - Passwords must be BCrypt-hashed (do not store plain passwords).
+
+## Important
+
+- Follow skills defined in subfolders of skills folder.
