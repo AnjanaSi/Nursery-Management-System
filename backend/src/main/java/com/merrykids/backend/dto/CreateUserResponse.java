@@ -10,4 +10,5 @@ public class CreateUserResponse {
     private String email;
     private String role;
     private boolean active;
+    private boolean mustChangePassword;
 }

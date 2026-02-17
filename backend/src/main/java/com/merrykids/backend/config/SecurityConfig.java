@@ -3,6 +3,7 @@ package com.merrykids.backend.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.merrykids.backend.dto.ApiResponse;
 import com.merrykids.backend.security.JwtAuthenticationFilter;
+import com.merrykids.backend.security.MustChangePasswordFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import java.util.List;
 
 @Configuration
@@ -35,6 +34,7 @@ import java.util.List;
 public class SecurityConfig {
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final MustChangePasswordFilter mustChangePasswordFilter;
         private final ObjectMapper objectMapper;
 
         @Bean
@@ -47,9 +47,10 @@ public class SecurityConfig {
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                                // preflight
                                                 .requestMatchers("/api/v1/health").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/forgot-password").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
                                                 .anyRequest().authenticated())
                                 .exceptionHandling(ex -> ex
                                                 .authenticationEntryPoint((request, response, authException) -> {
@@ -64,7 +65,8 @@ public class SecurityConfig {
                                                         objectMapper.writeValue(response.getOutputStream(),
                                                                         ApiResponse.error("Access denied"));
                                                 }))
-                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .addFilterAfter(mustChangePasswordFilter, JwtAuthenticationFilter.class);
 
                 return http.build();
         }
@@ -73,7 +75,6 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration config = new CorsConfiguration();
 
-                // Allow all origins safely with credentials:
                 config.setAllowedOriginPatterns(List.of("*"));
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 config.setAllowedHeaders(List.of("*"));

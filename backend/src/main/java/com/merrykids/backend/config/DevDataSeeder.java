@@ -33,6 +33,7 @@ public class DevDataSeeder implements CommandLineRunner {
                 .passwordHash(passwordEncoder.encode("Admin123!"))
                 .role(Role.ADMIN)
                 .active(true)
+                .mustChangePassword(false)
                 .build());
 
         userRepository.save(User.builder()
@@ -40,6 +41,7 @@ public class DevDataSeeder implements CommandLineRunner {
                 .passwordHash(passwordEncoder.encode("Teacher123!"))
                 .role(Role.TEACHER)
                 .active(true)
+                .mustChangePassword(false)
                 .build());
 
         userRepository.save(User.builder()
@@ -47,6 +49,7 @@ public class DevDataSeeder implements CommandLineRunner {
                 .passwordHash(passwordEncoder.encode("Parent123!"))
                 .role(Role.PARENT)
                 .active(true)
+                .mustChangePassword(false)
                 .build());
 
         log.info("Development data seeded: 3 users created.");

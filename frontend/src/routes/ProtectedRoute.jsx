@@ -1,5 +1,5 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated, getRole } from "../services/authService";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { isAuthenticated, getRole, getMustChangePassword } from "../services/authService";
 
 const ROLE_PATHS = {
   ADMIN: "/admin",
@@ -8,8 +8,14 @@ const ROLE_PATHS = {
 };
 
 export default function ProtectedRoute({ allowedRole }) {
+  const location = useLocation();
+
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (getMustChangePassword() && location.pathname !== "/change-password") {
+    return <Navigate to="/change-password" replace />;
   }
 
   const userRole = getRole();

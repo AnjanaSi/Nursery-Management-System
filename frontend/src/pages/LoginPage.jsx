@@ -6,6 +6,7 @@ import {
   getRole,
   getRolePath,
 } from "../services/authService";
+import logo from "../assets/logo.jpg";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -34,13 +35,16 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const data = await login(email, password);
-      navigate(getRolePath(data.role), { replace: true });
+      if (data.mustChangePassword) {
+        navigate("/change-password", { replace: true });
+      } else {
+        navigate(getRolePath(data.role), { replace: true });
+      }
     } catch (err) {
       const message =
-        err?.response?.data?.error || // <-- ApiResponse uses "error"
-        err?.response?.data?.message || // fallback if you ever add message later
-        "Invalid email or password."; // friendly default
-
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        "Invalid email or password.";
       setError(message);
     } finally {
       setLoading(false);
@@ -51,7 +55,7 @@ export default function LoginPage() {
     <div
       className="min-vh-100 d-flex align-items-center justify-content-center"
       style={{
-        background: "linear-gradient(135deg, #e8f0e8 0%, #d4e4d4 100%)",
+        background: "linear-gradient(135deg, var(--mk-blue-light) 0%, #E0E7FF 100%)",
       }}
     >
       <div className="container">
@@ -59,27 +63,27 @@ export default function LoginPage() {
           <div className="col-sm-10 col-md-8 col-lg-5 col-xl-4">
             <div className="card border-0 shadow rounded-4 p-4">
               <div className="card-body">
-                {/* Logo placeholder */}
                 <div className="text-center mb-4">
                   <div
-                    className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                    className="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 overflow-hidden"
                     style={{
                       width: "72px",
                       height: "72px",
-                      backgroundColor: "#4a6741",
-                      color: "#fff",
-                      fontSize: "2rem",
+                      backgroundColor: "var(--mk-blue)",
                     }}
                   >
-                    MK
+                    <img
+                      src={logo}
+                      alt="MerryKids"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
                   </div>
-                  <h4 className="fw-bold" style={{ color: "#4a6741" }}>
+                  <h4 className="fw-bold" style={{ color: "var(--mk-blue)" }}>
                     MerryKids Portal
                   </h4>
                   <p className="text-muted small">Sign in to your account</p>
                 </div>
 
-                {/* Error alert */}
                 {error && (
                   <div
                     className="alert alert-danger py-2 rounded-3"
@@ -89,7 +93,6 @@ export default function LoginPage() {
                   </div>
                 )}
 
-                {/* Login form */}
                 <form
                   noValidate
                   className={validated ? "was-validated" : ""}
@@ -114,7 +117,7 @@ export default function LoginPage() {
                     </div>
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-2">
                     <label
                       htmlFor="password"
                       className="form-label fw-semibold"
@@ -136,10 +139,19 @@ export default function LoginPage() {
                     </div>
                   </div>
 
+                  <div className="d-flex justify-content-end mb-3">
+                    <Link
+                      to="/forgot-password"
+                      className="text-decoration-none small"
+                      style={{ color: "var(--mk-pink)" }}
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
+
                   <button
                     type="submit"
-                    className="btn w-100 text-white fw-semibold rounded-3 py-2"
-                    style={{ backgroundColor: "#4a6741" }}
+                    className="btn mk-btn-primary w-100 py-2"
                     disabled={loading}
                   >
                     {loading ? (
@@ -161,7 +173,7 @@ export default function LoginPage() {
                   <Link
                     to="/"
                     className="text-decoration-none"
-                    style={{ color: "#4a6741" }}
+                    style={{ color: "var(--mk-blue)" }}
                   >
                     &larr; Back to Home
                   </Link>

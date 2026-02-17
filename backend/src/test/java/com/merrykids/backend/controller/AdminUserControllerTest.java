@@ -6,6 +6,7 @@ import com.merrykids.backend.dto.LoginRequest;
 import com.merrykids.backend.entity.Role;
 import com.merrykids.backend.entity.User;
 import com.merrykids.backend.repository.UserRepository;
+import com.merrykids.backend.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,9 @@ class AdminUserControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @MockitoBean
+    private EmailService emailService;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
@@ -48,6 +53,7 @@ class AdminUserControllerTest {
                 .passwordHash(passwordEncoder.encode("Admin123!"))
                 .role(Role.ADMIN)
                 .active(true)
+                .mustChangePassword(false)
                 .build());
 
         userRepository.save(User.builder()
@@ -55,6 +61,7 @@ class AdminUserControllerTest {
                 .passwordHash(passwordEncoder.encode("Teacher123!"))
                 .role(Role.TEACHER)
                 .active(true)
+                .mustChangePassword(false)
                 .build());
     }
 
@@ -64,7 +71,6 @@ class AdminUserControllerTest {
 
         CreateUserRequest request = new CreateUserRequest();
         request.setEmail("newparent@example.com");
-        request.setPassword("NewParent123!");
         request.setRole(Role.PARENT);
 
         mockMvc.perform(post("/api/v1/admin/users")
@@ -76,6 +82,7 @@ class AdminUserControllerTest {
                 .andExpect(jsonPath("$.data.email").value("newparent@example.com"))
                 .andExpect(jsonPath("$.data.role").value("PARENT"))
                 .andExpect(jsonPath("$.data.active").value(true))
+                .andExpect(jsonPath("$.data.mustChangePassword").value(true))
                 .andExpect(jsonPath("$.data.id").isNumber());
     }
 
@@ -85,7 +92,6 @@ class AdminUserControllerTest {
 
         CreateUserRequest request = new CreateUserRequest();
         request.setEmail("newparent@example.com");
-        request.setPassword("NewParent123!");
         request.setRole(Role.PARENT);
 
         mockMvc.perform(post("/api/v1/admin/users")
@@ -100,7 +106,6 @@ class AdminUserControllerTest {
     void createUser_withoutAuth_returns401() throws Exception {
         CreateUserRequest request = new CreateUserRequest();
         request.setEmail("newparent@example.com");
-        request.setPassword("NewParent123!");
         request.setRole(Role.PARENT);
 
         mockMvc.perform(post("/api/v1/admin/users")
@@ -116,7 +121,6 @@ class AdminUserControllerTest {
 
         CreateUserRequest request = new CreateUserRequest();
         request.setEmail("teacher@example.com");
-        request.setPassword("Password123!");
         request.setRole(Role.TEACHER);
 
         mockMvc.perform(post("/api/v1/admin/users")
@@ -138,6 +142,23 @@ class AdminUserControllerTest {
                         .content("{}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.success").value(false));
+    }
+
+    @Test
+    void createUser_withAdminRole_returns400() throws Exception {
+        String token = obtainToken("admin@example.com", "Admin123!");
+
+        CreateUserRequest request = new CreateUserRequest();
+        request.setEmail("newadmin@example.com");
+        request.setRole(Role.ADMIN);
+
+        mockMvc.perform(post("/api/v1/admin/users")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.success").value(false))
+                .andExpect(jsonPath("$.error").value("Cannot create users with ADMIN role"));
     }
 
     private String obtainToken(String email, String password) throws Exception {

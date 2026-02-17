@@ -78,6 +78,38 @@ Secure portal (role-based):
 - Preferred: invite-only onboarding (admin triggers invite; parent sets password).
 - Roles: ADMIN, TEACHER, PARENT. Public has no login.
 
+### Auth Feature Requirements (Non-negotiable)
+
+## Account provisioning
+
+Admin-only endpoint to create users (TEACHER/PARENT) with email + temp password (generated or provided).
+
+New users start with mustChangePassword = true and enabled = true.
+
+System sends email with temp password and login URL.
+
+First login password change
+
+Login response must include mustChangePassword.
+
+Frontend must redirect to Change Password screen when true.
+
+Backend must block all non-auth endpoints for users with mustChangePassword=true (except change-password + logout).
+
+## Forgot password
+
+Implement real email-based reset flow.
+
+Reset tokens must be secure random, single-use, short expiry, and stored hashed.
+
+Email contains a reset link to frontend /reset-password?token=....
+
+## Email
+
+Use Spring Boot Mail (SMTP) OR provider API; must work in real deployments.
+
+Secrets must come from environment variables (no credentials committed).
+
 ### Backend Structure
 
 Use consistent packages under `com.merrykids.backend`:
