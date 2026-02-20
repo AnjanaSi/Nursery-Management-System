@@ -11,6 +11,9 @@ frontend/.vite/
 frontend/.env*
 !frontend/.env.example
 
+# Uploaded files
+backend/uploads/
+
 # Logs
 *.log
 

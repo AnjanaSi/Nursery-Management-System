@@ -84,6 +84,11 @@ export default function LandingPage() {
                   Contact
                 </a>
               </li>
+              <li className="nav-item">
+                <Link to="/admissions" className="nav-link mk-nav-pill">
+                  Admissions
+                </Link>
+              </li>
             </ul>
 
             <div className="d-flex align-items-center gap-2 mt-2 mt-lg-0">

@@ -67,6 +67,7 @@ public class MustChangePasswordFilter extends OncePerRequestFilter {
                 || path.equals("/api/v1/auth/forgot-password")
                 || path.equals("/api/v1/auth/reset-password")
                 || path.equals("/api/v1/health")
+                || path.startsWith("/api/v1/public/")
                 || request.getMethod().equals("OPTIONS");
     }
 }

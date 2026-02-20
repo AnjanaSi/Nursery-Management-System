@@ -1,0 +1,29 @@
+.admissions-navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--mk-border);
+  box-shadow: var(--mk-shadow-sm);
+}
+
+.admissions-hero {
+  background: linear-gradient(135deg, var(--mk-blue) 0%, #7c3aed 100%);
+  padding: 3rem 0;
+}
+
+.admissions-announcement-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.admissions-date-badge {
+  background: var(--mk-blue-light);
+  color: var(--mk-blue);
+  font-size: 0.82rem;
+  padding: 0.4rem 1rem;
+}
+
+.admissions-ref-box {
+  background: var(--mk-blue-light);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-top: 1rem;
+}

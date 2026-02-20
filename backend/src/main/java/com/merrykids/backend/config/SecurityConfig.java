@@ -51,6 +51,7 @@ public class SecurityConfig {
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/forgot-password").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/reset-password").permitAll()
+                                                .requestMatchers("/api/v1/public/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .exceptionHandling(ex -> ex
                                                 .authenticationEntryPoint((request, response, authException) -> {
