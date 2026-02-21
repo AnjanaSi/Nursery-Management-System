@@ -3,6 +3,7 @@ package com.merrykids.backend.config;
 import com.merrykids.backend.entity.*;
 import com.merrykids.backend.repository.AdmissionAnnouncementRepository;
 import com.merrykids.backend.repository.AdmissionSubmissionRepository;
+import com.merrykids.backend.repository.TeacherRepository;
 import com.merrykids.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +24,13 @@ public class DevDataSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AdmissionAnnouncementRepository announcementRepository;
     private final AdmissionSubmissionRepository submissionRepository;
+    private final TeacherRepository teacherRepository;
 
     @Override
     public void run(String... args) {
         seedUsers();
         seedAdmissions();
+        seedTeachers();
     }
 
     private void seedUsers() {
@@ -122,5 +125,121 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Admission seed data created: 1 announcement, 3 submissions.");
+    }
+
+    private void seedTeachers() {
+        if (teacherRepository.count() > 0) {
+            log.info("Teachers already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding teacher data...");
+
+        int year = LocalDate.now().getYear();
+
+        // Teacher 1 — ACTIVE, linked to existing teacher@example.com user account
+        User teacherUser1 = userRepository.findByEmail("teacher@example.com").orElse(null);
+        teacherRepository.save(Teacher.builder()
+                .employmentId("MK-STF-" + year + "-0001")
+                .fullName("Anoma Wijesinghe")
+                .dateOfBirth(LocalDate.of(1988, 5, 12))
+                .email("teacher@example.com")
+                .phoneNumber("+94771234001")
+                .permanentAddress("45 Temple Road, Kandy")
+                .currentAddress("45 Temple Road, Kandy")
+                .emergencyContactName("Sunil Wijesinghe")
+                .emergencyContactNumber("+94771234002")
+                .maritalStatus(MaritalStatus.MARRIED)
+                .dateOfJoining(LocalDate.of(2023, 1, 15))
+                .levelAssigned(LevelAssigned.UKG1)
+                .designation(Designation.SENIOR_TEACHER)
+                .employmentStatus(EmploymentStatus.ACTIVE)
+                .user(teacherUser1)
+                .notes("Experienced Montessori educator with 10+ years.")
+                .build());
+
+        // Teacher 2 — ACTIVE, with own user account
+        User teacherUser2 = userRepository.save(User.builder()
+                .email("priya.fernando@example.com")
+                .passwordHash(passwordEncoder.encode("Teacher123!"))
+                .role(Role.TEACHER)
+                .active(true)
+                .mustChangePassword(false)
+                .build());
+
+        teacherRepository.save(Teacher.builder()
+                .employmentId("MK-STF-" + year + "-0002")
+                .fullName("Priya Fernando")
+                .dateOfBirth(LocalDate.of(1992, 8, 20))
+                .email("priya.fernando@example.com")
+                .phoneNumber("+94779876001")
+                .permanentAddress("12 Lake Drive, Colombo 07")
+                .currentAddress("12 Lake Drive, Colombo 07")
+                .emergencyContactName("Ravi Fernando")
+                .emergencyContactNumber("+94779876002")
+                .maritalStatus(MaritalStatus.SINGLE)
+                .dateOfJoining(LocalDate.of(2024, 3, 1))
+                .levelAssigned(LevelAssigned.LKG1)
+                .designation(Designation.TEACHER)
+                .employmentStatus(EmploymentStatus.ACTIVE)
+                .user(teacherUser2)
+                .build());
+
+        // Teacher 3 — ACTIVE, no user account
+        teacherRepository.save(Teacher.builder()
+                .employmentId("MK-STF-" + year + "-0003")
+                .fullName("Kumari Jayawardena")
+                .dateOfBirth(LocalDate.of(1995, 11, 3))
+                .email("kumari.j@example.com")
+                .phoneNumber("+94771112001")
+                .permanentAddress("78 Hill Street, Galle")
+                .currentAddress("22 Park Avenue, Colombo 05")
+                .emergencyContactName("Nimal Jayawardena")
+                .emergencyContactNumber("+94771112002")
+                .dateOfJoining(LocalDate.of(2024, 9, 1))
+                .levelAssigned(LevelAssigned.UKG2)
+                .designation(Designation.ASSISTANT_TEACHER)
+                .employmentStatus(EmploymentStatus.ACTIVE)
+                .build());
+
+        // Teacher 4 — RESIGNED, no account
+        teacherRepository.save(Teacher.builder()
+                .employmentId("MK-STF-" + year + "-0004")
+                .fullName("Dinesh Rathnayake")
+                .dateOfBirth(LocalDate.of(1985, 2, 28))
+                .email("dinesh.r@example.com")
+                .phoneNumber("+94775556001")
+                .permanentAddress("33 Main Street, Matara")
+                .currentAddress("33 Main Street, Matara")
+                .emergencyContactName("Champa Rathnayake")
+                .emergencyContactNumber("+94775556002")
+                .maritalStatus(MaritalStatus.MARRIED)
+                .dateOfJoining(LocalDate.of(2022, 6, 15))
+                .levelAssigned(LevelAssigned.UKG1)
+                .designation(Designation.TEACHER)
+                .employmentStatus(EmploymentStatus.RESIGNED)
+                .notes("Resigned for personal reasons in December 2024.")
+                .build());
+
+        // Teacher 5 — RETIRED, no account
+        teacherRepository.save(Teacher.builder()
+                .employmentId("MK-STF-" + year + "-0005")
+                .fullName("Margaret de Silva")
+                .dateOfBirth(LocalDate.of(1965, 9, 10))
+                .email("margaret.ds@example.com")
+                .phoneNumber("+94773334001")
+                .permanentAddress("5 Church Lane, Negombo")
+                .currentAddress("5 Church Lane, Negombo")
+                .emergencyContactName("Anton de Silva")
+                .emergencyContactNumber("+94773334002")
+                .maritalStatus(MaritalStatus.WIDOWED)
+                .dateOfJoining(LocalDate.of(2015, 1, 5))
+                .levelAssigned(LevelAssigned.LKG1)
+                .designation(Designation.PRINCIPAL)
+                .employmentStatus(EmploymentStatus.RETIRED)
+                .notes("Retired after 10 years of dedicated service.")
+                .build());
+
+        log.info("Teacher seed data created: 5 teachers (2 with linked accounts).");
     }
 }

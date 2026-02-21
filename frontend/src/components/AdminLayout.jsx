@@ -6,7 +6,7 @@ import "./AdminLayout.css";
 const menuItems = [
   { label: "Dashboard", path: "/admin", icon: "\u2302" },
   { label: "Admissions", path: "/admin/admissions", icon: "\uD83D\uDCCB" },
-  { label: "Staff", path: "/admin/staff", icon: "\uD83D\uDC65", disabled: true },
+  { label: "Staff", path: "/admin/staff", icon: "\uD83D\uDC65" },
   { label: "Students", path: "/admin/students", icon: "\uD83C\uDF93", disabled: true },
   { label: "Parents", path: "/admin/parents", icon: "\uD83C\uDFE0", disabled: true },
 ];

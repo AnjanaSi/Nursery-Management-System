@@ -1,0 +1,157 @@
+/* ── Staff Module Shared Styles ── */
+
+.staff-card {
+  border: none;
+  border-radius: var(--mk-radius, 0.75rem);
+  box-shadow: var(--mk-shadow-sm, 0 1px 3px rgba(37, 99, 235, 0.08));
+  transition: box-shadow 0.15s, transform 0.15s;
+  cursor: pointer;
+}
+
+.staff-card:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ── Form Sections ── */
+.staff-form-section {
+  background: var(--mk-surface, #F8FAFC);
+  border-radius: var(--mk-radius, 0.75rem);
+  border: 1px solid var(--mk-border, #E2E8F0);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.staff-form-section-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--mk-blue, #2563EB);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--mk-blue-light, #DBEAFE);
+}
+
+/* ── Photo Preview ── */
+.staff-photo-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--mk-blue-light, #DBEAFE);
+  box-shadow: var(--mk-shadow-sm);
+}
+
+.staff-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--mk-surface-alt, #F1F5F9);
+  border: 3px dashed var(--mk-border, #E2E8F0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mk-text-muted, #64748B);
+  font-size: 2.5rem;
+}
+
+/* ── Status Badges ── */
+.badge-active {
+  background-color: var(--mk-blue, #2563EB) !important;
+  color: #fff;
+}
+
+.badge-resigned {
+  background-color: #6c757d !important;
+  color: #fff;
+}
+
+.badge-retired {
+  background-color: #0dcaf0 !important;
+  color: #000;
+}
+
+.badge-terminated {
+  background-color: #dc3545 !important;
+  color: #fff;
+}
+
+.badge-account-active {
+  background-color: var(--mk-blue, #2563EB) !important;
+  color: #fff;
+}
+
+.badge-no-account {
+  background-color: #f1f5f9 !important;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.badge-disabled {
+  background-color: #ffc107 !important;
+  color: #000;
+}
+
+/* ── Detail Sections ── */
+.staff-detail-section {
+  background: var(--mk-surface, #F8FAFC);
+  border-radius: var(--mk-radius, 0.75rem);
+  border: 1px solid var(--mk-border, #E2E8F0);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.staff-detail-label {
+  font-size: 0.8rem;
+  color: var(--mk-text-muted, #64748B);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.2rem;
+}
+
+.staff-detail-value {
+  font-size: 0.95rem;
+  color: var(--mk-text, #1E293B);
+  font-weight: 500;
+}
+
+/* ── Table Styles ── */
+.staff-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--mk-text-muted, #64748B);
+  border-bottom-width: 2px;
+  white-space: nowrap;
+}
+
+.staff-table td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+/* ── Empty State ── */
+.staff-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--mk-text-muted, #64748B);
+}
+
+.staff-empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* ── Action Buttons ── */
+.staff-action-btn {
+  border-radius: var(--mk-radius, 0.75rem);
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+}
+
+/* ── Confirm Modal ── */
+.staff-confirm-text {
+  font-size: 0.95rem;
+  color: var(--mk-text, #1E293B);
+}

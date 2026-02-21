@@ -21,10 +21,12 @@ public class FileStorageConfig {
     public void init() throws IOException {
         Path announcementsDir = Paths.get(uploadDir, "admissions", "announcements");
         Path submissionsDir = Paths.get(uploadDir, "admissions", "submissions");
+        Path staffPhotosDir = Paths.get(uploadDir, "staff", "photos");
 
         Files.createDirectories(announcementsDir);
         Files.createDirectories(submissionsDir);
+        Files.createDirectories(staffPhotosDir);
 
-        log.info("Upload directories created: {}, {}", announcementsDir, submissionsDir);
+        log.info("Upload directories created: {}, {}, {}", announcementsDir, submissionsDir, staffPhotosDir);
     }
 }

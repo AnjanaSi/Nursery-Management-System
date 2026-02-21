@@ -6,7 +6,7 @@ const cards = [
     description: "Add, edit, and manage staff members.",
     path: "/admin/staff",
     icon: "\uD83D\uDC65",
-    disabled: true,
+    disabled: false,
   },
   {
     title: "Student Management",

@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -67,6 +68,53 @@ public class FileStorageService {
         } catch (IOException e) {
             log.warn("Failed to delete file: {}", filePath, e);
         }
+    }
+
+    private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
+            "image/jpeg", "image/png", "image/webp"
+    );
+
+    public StoredFile storeImage(MultipartFile file, String subDirectory) {
+        validateImage(file);
+
+        String originalName = file.getOriginalFilename();
+        String extension = getExtension(originalName);
+        String storedName = UUID.randomUUID() + extension;
+        Path targetDir = uploadPath.resolve(subDirectory);
+        Path targetPath = targetDir.resolve(storedName);
+
+        try {
+            Files.createDirectories(targetDir);
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            log.info("Image stored: {} -> {}", originalName, targetPath);
+        } catch (IOException e) {
+            throw new FileStorageException("Failed to store image: " + originalName, e);
+        }
+
+        return new StoredFile(originalName, storedName, targetPath.toString());
+    }
+
+    private void validateImage(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new FileStorageException("Image file is required");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType)) {
+            throw new FileStorageException("Only JPEG, PNG, and WEBP images are accepted");
+        }
+
+        long maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.getSize() > maxSize) {
+            throw new FileStorageException("Image size exceeds the maximum limit of 5MB");
+        }
+    }
+
+    private String getExtension(String filename) {
+        if (filename != null && filename.contains(".")) {
+            return filename.substring(filename.lastIndexOf("."));
+        }
+        return ".jpg";
     }
 
     private void validatePdf(MultipartFile file) {

@@ -1,0 +1,35 @@
+.staff-module-header {
+  padding-bottom: 0.5rem;
+}
+
+.staff-header-logo {
+  height: 40px;
+  width: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  background: var(--mk-blue-light, #DBEAFE);
+  padding: 4px;
+}
+
+.staff-header-brand {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--mk-blue, #2563EB);
+  line-height: 1.2;
+}
+
+.staff-header-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--mk-text, #1E293B);
+}
+
+.staff-header-divider {
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--mk-blue, #2563EB) 0%,
+    var(--mk-pink, #EC4899) 100%
+  );
+}
