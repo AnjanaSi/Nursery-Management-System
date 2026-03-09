@@ -13,7 +13,7 @@ const cards = [
     description: "Manage enrolled students and records.",
     path: "/admin/students",
     icon: "\uD83C\uDF93",
-    disabled: true,
+    disabled: false,
   },
   {
     title: "Admissions",

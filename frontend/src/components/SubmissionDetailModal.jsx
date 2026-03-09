@@ -4,7 +4,6 @@ import {
   updateSubmissionNote,
   downloadSubmissionPdf,
 } from "../services/api/admissionsService";
-import axiosClient from "../services/api/axiosClient";
 
 const STATUSES = [
   "RECEIVED",
@@ -38,8 +37,6 @@ export default function SubmissionDetailModal({ submission, onClose, onUpdated }
   const [statusSaving, setStatusSaving] = useState(false);
   const [noteSaving, setNoteSaving] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [creatingAccount, setCreatingAccount] = useState(false);
-  const [accountMsg, setAccountMsg] = useState("");
   const [error, setError] = useState("");
   const modalRef = useRef(null);
 
@@ -47,7 +44,6 @@ export default function SubmissionDetailModal({ submission, onClose, onUpdated }
     if (submission) {
       setStatus(submission.status);
       setNote(submission.adminNote || "");
-      setAccountMsg("");
       setError("");
     }
   }, [submission]);
@@ -103,29 +99,6 @@ export default function SubmissionDetailModal({ submission, onClose, onUpdated }
       setError("Failed to download PDF.");
     } finally {
       setDownloading(false);
-    }
-  };
-
-  const handleCreateParentAccount = async () => {
-    setCreatingAccount(true);
-    setAccountMsg("");
-    try {
-      const res = await axiosClient.post("/api/v1/admin/users", {
-        email: submission.email,
-        role: "PARENT",
-      });
-      if (res.data.success) {
-        setAccountMsg("Parent account created! A welcome email with temporary password has been sent.");
-      }
-    } catch (err) {
-      const errMsg = err?.response?.data?.error || "";
-      if (errMsg.toLowerCase().includes("already exists")) {
-        setAccountMsg("A parent account with this email already exists.");
-      } else {
-        setAccountMsg(errMsg || "Failed to create parent account.");
-      }
-    } finally {
-      setCreatingAccount(false);
     }
   };
 
@@ -261,40 +234,6 @@ export default function SubmissionDetailModal({ submission, onClose, onUpdated }
               </button>
             </div>
 
-            {/* Create Parent Account */}
-            {status === "ACCEPTED" && (
-              <div className="mt-3 p-3 rounded-3" style={{ background: "var(--mk-blue-light)" }}>
-                <h6 className="fw-bold mb-2" style={{ color: "var(--mk-blue)" }}>
-                  Create Parent Account
-                </h6>
-                <p className="text-muted small mb-2">
-                  Send a temporary password to <strong>{submission.email}</strong> so
-                  they can access the parent portal.
-                </p>
-                {accountMsg && (
-                  <div
-                    className={`alert ${accountMsg.includes("created") ? "alert-success" : "alert-warning"} py-2 small`}
-                  >
-                    {accountMsg}
-                  </div>
-                )}
-                <button
-                  className="btn btn-primary btn-sm rounded-pill px-4"
-                  style={{ backgroundColor: "var(--mk-blue)", borderColor: "var(--mk-blue)" }}
-                  onClick={handleCreateParentAccount}
-                  disabled={creatingAccount}
-                >
-                  {creatingAccount ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-1" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Parent Account (Send Temp Password Email)"
-                  )}
-                </button>
-              </div>
-            )}
           </div>
           <div className="modal-footer border-0 pt-0">
             <button type="button" className="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">

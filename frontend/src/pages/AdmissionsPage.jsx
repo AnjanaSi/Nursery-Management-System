@@ -41,7 +41,9 @@ export default function AdmissionsPage() {
         const res = await getPublicAnnouncement();
         setAnnouncement(res.data);
       } catch {
-        setError("Unable to load admission information. Please try again later.");
+        setError(
+          "Unable to load admission information. Please try again later.",
+        );
       } finally {
         setLoading(false);
       }
@@ -95,7 +97,7 @@ export default function AdmissionsPage() {
       }
     } catch (err) {
       setSubmitError(
-        err?.response?.data?.error || "Submission failed. Please try again."
+        err?.response?.data?.error || "Submission failed. Please try again.",
       );
     } finally {
       setSubmitting(false);
@@ -110,12 +112,19 @@ export default function AdmissionsPage() {
       <nav className="navbar sticky-top admissions-navbar">
         <div className="container">
           <Link to="/" className="navbar-brand d-flex align-items-center gap-2">
-            <img src={logo} alt="MerryKids" style={{ height: 36, borderRadius: 8 }} />
+            <img
+              src={logo}
+              alt="MerryKids"
+              style={{ height: 36, borderRadius: 8 }}
+            />
             <span className="fw-bold" style={{ color: "var(--mk-blue)" }}>
-              MerryKids Nursery
+              Merry Kids International Montessori
             </span>
           </Link>
-          <Link to="/" className="btn btn-outline-secondary btn-sm rounded-pill px-3">
+          <Link
+            to="/"
+            className="btn btn-outline-secondary btn-sm rounded-pill px-3"
+          >
             Back to Home
           </Link>
         </div>
@@ -152,7 +161,10 @@ export default function AdmissionsPage() {
             <div className="col-lg-6">
               <div className="card border-0 shadow-sm rounded-4 text-center p-5">
                 <div style={{ fontSize: "3rem" }}>&#128218;</div>
-                <h3 className="fw-bold mt-3" style={{ color: "var(--mk-blue)" }}>
+                <h3
+                  className="fw-bold mt-3"
+                  style={{ color: "var(--mk-blue)" }}
+                >
                   Admissions are Currently Closed
                 </h3>
                 <p className="text-muted mb-0">
@@ -170,13 +182,21 @@ export default function AdmissionsPage() {
             <div className="col-lg-6">
               <div className="card border-0 shadow-sm rounded-4 text-center p-5">
                 <div style={{ fontSize: "3rem" }}>&#9989;</div>
-                <h3 className="fw-bold mt-3" style={{ color: "var(--mk-blue)" }}>
+                <h3
+                  className="fw-bold mt-3"
+                  style={{ color: "var(--mk-blue)" }}
+                >
                   Application Submitted!
                 </h3>
                 <p className="text-muted">{submitSuccess.message}</p>
                 <div className="admissions-ref-box">
-                  <small className="text-muted d-block mb-1">Your Reference Number</small>
-                  <span className="fw-bold fs-4" style={{ color: "var(--mk-blue)" }}>
+                  <small className="text-muted d-block mb-1">
+                    Your Reference Number
+                  </small>
+                  <span
+                    className="fw-bold fs-4"
+                    style={{ color: "var(--mk-blue)" }}
+                  >
                     {submitSuccess.referenceNo}
                   </span>
                 </div>
@@ -196,18 +216,27 @@ export default function AdmissionsPage() {
               <div className="col-lg-8">
                 <div className="card border-0 shadow-sm rounded-4 p-4">
                   <div className="d-flex align-items-start gap-3">
-                    <div className="admissions-announcement-icon">&#128227;</div>
+                    <div className="admissions-announcement-icon">
+                      &#128227;
+                    </div>
                     <div className="flex-grow-1">
-                      <h5 className="fw-bold mb-2" style={{ color: "var(--mk-blue)" }}>
+                      <h5
+                        className="fw-bold mb-2"
+                        style={{ color: "var(--mk-blue)" }}
+                      >
                         Admission Announcement
                       </h5>
                       <p className="mb-2">{announcement.message}</p>
                       <div className="d-flex flex-wrap gap-3 mb-3">
                         <span className="badge rounded-pill admissions-date-badge">
-                          Opens: {new Date(announcement.openDate).toLocaleDateString()}
+                          Opens:{" "}
+                          {new Date(announcement.openDate).toLocaleDateString()}
                         </span>
                         <span className="badge rounded-pill admissions-date-badge">
-                          Closes: {new Date(announcement.closeDate).toLocaleDateString()}
+                          Closes:{" "}
+                          {new Date(
+                            announcement.closeDate,
+                          ).toLocaleDateString()}
                         </span>
                       </div>
                       {announcement.hasApplicationPdf && (
@@ -230,7 +259,10 @@ export default function AdmissionsPage() {
             <div className="row justify-content-center">
               <div className="col-lg-8">
                 <div className="card border-0 shadow-sm rounded-4 p-4">
-                  <h5 className="fw-bold mb-4" style={{ color: "var(--mk-blue)" }}>
+                  <h5
+                    className="fw-bold mb-4"
+                    style={{ color: "var(--mk-blue)" }}
+                  >
                     Submit Your Application
                   </h5>
 
@@ -246,7 +278,9 @@ export default function AdmissionsPage() {
                     <div className="row g-3">
                       {/* Child name */}
                       <div className="col-md-6">
-                        <label className="form-label">Child&apos;s Full Name *</label>
+                        <label className="form-label">
+                          Child&apos;s Full Name *
+                        </label>
                         <input
                           type="text"
                           className="form-control rounded-3"
@@ -274,7 +308,9 @@ export default function AdmissionsPage() {
 
                       {/* Level */}
                       <div className="col-md-6">
-                        <label className="form-label">Level Applying For *</label>
+                        <label className="form-label">
+                          Level Applying For *
+                        </label>
                         <select
                           className="form-select rounded-3"
                           name="levelApplyingFor"
@@ -294,7 +330,9 @@ export default function AdmissionsPage() {
 
                       {/* Guardian name */}
                       <div className="col-md-6">
-                        <label className="form-label">Guardian&apos;s Full Name *</label>
+                        <label className="form-label">
+                          Guardian&apos;s Full Name *
+                        </label>
                         <input
                           type="text"
                           className="form-control rounded-3"
@@ -317,7 +355,9 @@ export default function AdmissionsPage() {
                           onChange={handleChange}
                           required
                         />
-                        <div className="invalid-feedback">Valid email required</div>
+                        <div className="invalid-feedback">
+                          Valid email required
+                        </div>
                       </div>
 
                       {/* Phone */}
@@ -361,10 +401,14 @@ export default function AdmissionsPage() {
                           required
                         />
                         {fileError && (
-                          <div className="text-danger small mt-1">{fileError}</div>
+                          <div className="text-danger small mt-1">
+                            {fileError}
+                          </div>
                         )}
                         {validated && !pdfFile && !fileError && (
-                          <div className="invalid-feedback d-block">PDF file is required</div>
+                          <div className="invalid-feedback d-block">
+                            PDF file is required
+                          </div>
                         )}
                       </div>
                     </div>
@@ -373,7 +417,10 @@ export default function AdmissionsPage() {
                       <button
                         type="submit"
                         className="btn btn-primary rounded-pill px-5"
-                        style={{ backgroundColor: "var(--mk-blue)", borderColor: "var(--mk-blue)" }}
+                        style={{
+                          backgroundColor: "var(--mk-blue)",
+                          borderColor: "var(--mk-blue)",
+                        }}
                         disabled={submitting}
                       >
                         {submitting ? (

@@ -26,7 +26,7 @@ export default function LandingPage() {
           >
             <img src={logo} alt="MerryKids logo" />
             <span className="fw-bold fs-5" style={{ color: "var(--mk-blue)" }}>
-              MerryKids Nursery
+              Merry Kids International Montessori
             </span>
           </a>
 

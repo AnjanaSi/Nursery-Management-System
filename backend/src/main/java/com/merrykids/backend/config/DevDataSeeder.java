@@ -1,10 +1,7 @@
 package com.merrykids.backend.config;
 
 import com.merrykids.backend.entity.*;
-import com.merrykids.backend.repository.AdmissionAnnouncementRepository;
-import com.merrykids.backend.repository.AdmissionSubmissionRepository;
-import com.merrykids.backend.repository.TeacherRepository;
-import com.merrykids.backend.repository.UserRepository;
+import com.merrykids.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -25,12 +22,16 @@ public class DevDataSeeder implements CommandLineRunner {
     private final AdmissionAnnouncementRepository announcementRepository;
     private final AdmissionSubmissionRepository submissionRepository;
     private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
+    private final GuardianRepository guardianRepository;
+    private final StudentGuardianRepository studentGuardianRepository;
 
     @Override
     public void run(String... args) {
         seedUsers();
         seedAdmissions();
         seedTeachers();
+        seedStudents();
     }
 
     private void seedUsers() {
@@ -241,5 +242,105 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Teacher seed data created: 5 teachers (2 with linked accounts).");
+    }
+
+    private void seedStudents() {
+        if (studentRepository.count() > 0) {
+            log.info("Students already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding student data...");
+
+        int year = LocalDate.now().getYear();
+        String batchCode = String.format("%02d%s", year % 100, "LKG1");
+
+        // Guardian 1 — Father, linked to existing parent@example.com user
+        User parentUser = userRepository.findByEmail("parent@example.com").orElse(null);
+        Guardian father = guardianRepository.save(Guardian.builder()
+                .fullName("Nimal Silva")
+                .email("nimal.silva@example.com")
+                .phone("+94771234567")
+                .nic("901234567V")
+                .address("123 Galle Road, Colombo 03")
+                .user(parentUser)
+                .build());
+
+        // Guardian 2 — Mother, no user account
+        Guardian mother = guardianRepository.save(Guardian.builder()
+                .fullName("Kamala Silva")
+                .email("kamala.silva@example.com")
+                .phone("+94771234568")
+                .address("123 Galle Road, Colombo 03")
+                .build());
+
+        // Student 1 — ACTIVE LKG1
+        Student student1 = studentRepository.save(Student.builder()
+                .admissionNo("MK-" + batchCode + "-0001")
+                .fullName("Emma Silva")
+                .dateOfBirth(LocalDate.of(2021, 3, 15))
+                .gender(Gender.FEMALE)
+                .entryYear(year)
+                .entryLevel(LevelAssigned.LKG1)
+                .currentLevel(LevelAssigned.LKG1)
+                .batchCode(batchCode)
+                .status(StudentStatus.ACTIVE)
+                .enrollmentDate(LocalDate.of(year, 1, 10))
+                .notes("Admitted via standard application.")
+                .build());
+
+        // Link guardians to student
+        studentGuardianRepository.save(StudentGuardian.builder()
+                .student(student1)
+                .guardian(father)
+                .relationshipType(GuardianRelationshipType.FATHER)
+                .build());
+
+        studentGuardianRepository.save(StudentGuardian.builder()
+                .student(student1)
+                .guardian(mother)
+                .relationshipType(GuardianRelationshipType.MOTHER)
+                .build());
+
+        // Student 2 — ACTIVE LKG1, same batch (for bulk promotion testing)
+        Guardian father2 = guardianRepository.save(Guardian.builder()
+                .fullName("Kamal Perera")
+                .email("kamal.perera@example.com")
+                .phone("+94779876543")
+                .address("456 Marine Drive, Colombo 06")
+                .build());
+
+        Guardian mother2 = guardianRepository.save(Guardian.builder()
+                .fullName("Dilani Perera")
+                .phone("+94779876544")
+                .address("456 Marine Drive, Colombo 06")
+                .build());
+
+        Student student2 = studentRepository.save(Student.builder()
+                .admissionNo("MK-" + batchCode + "-0002")
+                .fullName("Aiden Perera")
+                .dateOfBirth(LocalDate.of(2021, 7, 22))
+                .gender(Gender.MALE)
+                .entryYear(year)
+                .entryLevel(LevelAssigned.LKG1)
+                .currentLevel(LevelAssigned.LKG1)
+                .batchCode(batchCode)
+                .status(StudentStatus.ACTIVE)
+                .enrollmentDate(LocalDate.of(year, 1, 10))
+                .build());
+
+        studentGuardianRepository.save(StudentGuardian.builder()
+                .student(student2)
+                .guardian(father2)
+                .relationshipType(GuardianRelationshipType.FATHER)
+                .build());
+
+        studentGuardianRepository.save(StudentGuardian.builder()
+                .student(student2)
+                .guardian(mother2)
+                .relationshipType(GuardianRelationshipType.MOTHER)
+                .build());
+
+        log.info("Student seed data created: 2 students, 4 guardians (1 with linked account).");
     }
 }

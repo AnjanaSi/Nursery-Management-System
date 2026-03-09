@@ -1,0 +1,148 @@
+/* ── Student Module Shared Styles ── */
+
+.student-card {
+  border: none;
+  border-radius: var(--mk-radius, 0.75rem);
+  box-shadow: var(--mk-shadow-sm, 0 1px 3px rgba(37, 99, 235, 0.08));
+  transition: box-shadow 0.15s, transform 0.15s;
+  cursor: pointer;
+}
+
+.student-card:hover {
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ── Form Sections ── */
+.student-form-section {
+  background: var(--mk-surface, #F8FAFC);
+  border-radius: var(--mk-radius, 0.75rem);
+  border: 1px solid var(--mk-border, #E2E8F0);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.student-form-section-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--mk-blue, #2563EB);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--mk-blue-light, #DBEAFE);
+}
+
+/* ── Photo Preview ── */
+.student-photo-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--mk-blue-light, #DBEAFE);
+  box-shadow: var(--mk-shadow-sm);
+}
+
+.student-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--mk-surface-alt, #F1F5F9);
+  border: 3px dashed var(--mk-border, #E2E8F0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mk-text-muted, #64748B);
+  font-size: 2.5rem;
+}
+
+/* ── Status Badges ── */
+.badge-student-active {
+  background-color: #198754 !important;
+  color: #fff;
+}
+
+.badge-student-withdrawn {
+  background-color: #ffc107 !important;
+  color: #000;
+}
+
+.badge-student-graduated {
+  background-color: #0dcaf0 !important;
+  color: #000;
+}
+
+/* ── Detail Sections ── */
+.student-detail-section {
+  background: var(--mk-surface, #F8FAFC);
+  border-radius: var(--mk-radius, 0.75rem);
+  border: 1px solid var(--mk-border, #E2E8F0);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.student-detail-label {
+  font-size: 0.8rem;
+  color: var(--mk-text-muted, #64748B);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.2rem;
+}
+
+.student-detail-value {
+  font-size: 0.95rem;
+  color: var(--mk-text, #1E293B);
+  font-weight: 500;
+}
+
+/* ── Table Styles ── */
+.student-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--mk-text-muted, #64748B);
+  border-bottom-width: 2px;
+  white-space: nowrap;
+}
+
+.student-table td {
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+/* ── Empty State ── */
+.student-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--mk-text-muted, #64748B);
+}
+
+.student-empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* ── Guardian Cards ── */
+.guardian-card {
+  background: var(--mk-surface, #F8FAFC);
+  border-radius: var(--mk-radius, 0.75rem);
+  border: 1px solid var(--mk-border, #E2E8F0);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.guardian-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Year Transition ── */
+.transition-card {
+  border: none;
+  border-radius: var(--mk-radius, 0.75rem);
+  box-shadow: var(--mk-shadow-sm);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}

@@ -11,6 +11,11 @@ import StaffLandingPage from "./pages/StaffLandingPage";
 import StaffAddPage from "./pages/StaffAddPage";
 import StaffListPage from "./pages/StaffListPage";
 import StaffDetailPage from "./pages/StaffDetailPage";
+import StudentsLandingPage from "./pages/StudentsLandingPage";
+import StudentFormPage from "./pages/StudentFormPage";
+import StudentsListPage from "./pages/StudentsListPage";
+import StudentDetailPage from "./pages/StudentDetailPage";
+import YearTransitionPage from "./pages/YearTransitionPage";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -39,6 +44,12 @@ function App() {
             <Route path="/admin/staff/new" element={<StaffAddPage />} />
             <Route path="/admin/staff/list" element={<StaffListPage />} />
             <Route path="/admin/staff/:id" element={<StaffDetailPage />} />
+            <Route path="/admin/students" element={<StudentsLandingPage />} />
+            <Route path="/admin/students/new" element={<StudentFormPage />} />
+            <Route path="/admin/students/list" element={<StudentsListPage />} />
+            <Route path="/admin/students/year-transition" element={<YearTransitionPage />} />
+            <Route path="/admin/students/:id/edit" element={<StudentFormPage />} />
+            <Route path="/admin/students/:id" element={<StudentDetailPage />} />
           </Route>
         </Route>
 
