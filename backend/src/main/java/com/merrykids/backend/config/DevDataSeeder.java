@@ -2,6 +2,7 @@ package com.merrykids.backend.config;
 
 import com.merrykids.backend.entity.*;
 import com.merrykids.backend.repository.*;
+import com.merrykids.backend.util.AcademicYearUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -25,6 +26,7 @@ public class DevDataSeeder implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final GuardianRepository guardianRepository;
     private final StudentGuardianRepository studentGuardianRepository;
+    private final PortalContentRepository portalContentRepository;
 
     @Override
     public void run(String... args) {
@@ -32,6 +34,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedAdmissions();
         seedTeachers();
         seedStudents();
+        seedPortalContent();
     }
 
     private void seedUsers() {
@@ -342,5 +345,120 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Student seed data created: 2 students, 4 guardians (1 with linked account).");
+    }
+
+    private void seedPortalContent() {
+        if (portalContentRepository.count() > 0) {
+            log.info("Portal content already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding portal content data...");
+
+        String academicYear = AcademicYearUtil.getCurrent();
+
+        // Fetch LKG1 teacher (Priya Fernando) and UKG1 teacher (Anoma Wijesinghe)
+        Teacher priya = teacherRepository.findAll().stream()
+                .filter(t -> "Priya Fernando".equals(t.getFullName()) && !t.isDeleted())
+                .findFirst().orElse(null);
+
+        Teacher anoma = teacherRepository.findAll().stream()
+                .filter(t -> "Anoma Wijesinghe".equals(t.getFullName()) && !t.isDeleted())
+                .findFirst().orElse(null);
+
+        if (priya == null || anoma == null) {
+            log.warn("Seed teachers not found, skipping portal content seed.");
+            return;
+        }
+
+        // LKG1 Announcements
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.ANNOUNCEMENT)
+                .title("Welcome to LKG1 — " + academicYear + " Academic Year!")
+                .body("Dear Parents,\n\nWe are thrilled to welcome you and your children to the " + academicYear
+                        + " academic year at MerryKids. Our LKG1 programme is designed to nurture curiosity, creativity, and confidence in every child.\n\n"
+                        + "Classes begin on 10th January. Please ensure your child arrives by 8:00 AM. Kindly review the attached timetable for the weekly schedule.\n\n"
+                        + "Looking forward to a wonderful year together!\n\nMs. Priya Fernando\nLKG1 Teacher")
+                .targetLevel(LevelAssigned.LKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(priya)
+                .pinned(true)
+                .urgent(false)
+                .build());
+
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.ANNOUNCEMENT)
+                .title("Reminder: Annual Sports Day — This Friday!")
+                .body("Dear Parents,\n\nThis is a reminder that the Annual Sports Day will be held this Friday, 14th March, from 8:30 AM to 12:00 PM on the school grounds.\n\n"
+                        + "Children are requested to wear their house colours. Please ensure they bring a water bottle and wear comfortable footwear.\n\n"
+                        + "Parents are warmly invited to attend and cheer for their little champions!")
+                .targetLevel(LevelAssigned.LKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(priya)
+                .pinned(false)
+                .urgent(true)
+                .build());
+
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.ANNOUNCEMENT)
+                .title("Term 1 Parent-Teacher Meeting Schedule")
+                .body("Dear Parents,\n\nPlease find below the schedule for Term 1 Parent-Teacher Meetings. Each session is 15 minutes.\n\n"
+                        + "Appointments will be shared via email. Kindly confirm your attendance by replying to the school office.\n\nThank you.")
+                .targetLevel(LevelAssigned.LKG1)
+                .academicYear((LocalDate.now().getYear() - 1) + "/" + LocalDate.now().getYear())
+                .createdByTeacher(priya)
+                .pinned(false)
+                .urgent(false)
+                .archived(true)
+                .build());
+
+        // LKG1 Homework
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.HOMEWORK)
+                .title("Alphabet Practice — Letters A to E")
+                .body("Dear Parents,\n\nPlease help your child practise writing the letters A, B, C, D, and E in their activity book (pages 5–7).\n\n"
+                        + "Children should trace each letter 3 times and then write it independently once. Please encourage them to say the letter name and its sound aloud as they write.\n\n"
+                        + "This activity should take about 15–20 minutes.")
+                .targetLevel(LevelAssigned.LKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(priya)
+                .category("Language Arts")
+                .dueDate(LocalDate.now().plusDays(3))
+                .build());
+
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.HOMEWORK)
+                .title("Counting Activity — Numbers 1 to 10")
+                .body("Dear Parents,\n\nFor this week's maths activity, please help your child count objects around the house (e.g., buttons, spoons, toys) and write the numbers 1 to 10 in their maths workbook.\n\n"
+                        + "You can make it fun by asking them to find groups of objects and count them together!")
+                .targetLevel(LevelAssigned.LKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(priya)
+                .category("Mathematics")
+                .build());
+
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.HOMEWORK)
+                .title("Colour Recognition — Draw and Colour")
+                .body("Past homework: Children were asked to draw their favourite animal and colour it using at least 3 different colours.\n\nMost children completed this beautifully!")
+                .targetLevel(LevelAssigned.LKG1)
+                .academicYear((LocalDate.now().getYear() - 1) + "/" + LocalDate.now().getYear())
+                .createdByTeacher(priya)
+                .category("Art")
+                .archived(true)
+                .build());
+
+        // UKG1 Announcements (for Anoma's level)
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.ANNOUNCEMENT)
+                .title("UKG1 Term 2 Begins — Important Updates")
+                .body("Dear Parents,\n\nWelcome back! Term 2 for UKG1 begins on Monday 17th March. Please review the updated timetable attached and ensure all workbooks are labelled.\n\nMs. Anoma Wijesinghe\nUKG1 Senior Teacher")
+                .targetLevel(LevelAssigned.UKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(anoma)
+                .pinned(true)
+                .build());
+
+        log.info("Portal content seed data created for LKG1 and UKG1.");
     }
 }

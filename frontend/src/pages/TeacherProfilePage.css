@@ -1,0 +1,94 @@
+.tp-page {
+  max-width: 560px;
+}
+
+.tp-page-header {
+  margin-bottom: 1.75rem;
+}
+
+.tp-card {
+  background: #fff;
+  border: 1px solid var(--mk-border);
+  border-radius: var(--mk-radius);
+  padding: 2rem;
+  box-shadow: var(--mk-shadow-sm);
+  text-align: center;
+}
+
+.tp-avatar {
+  width: 72px;
+  height: 72px;
+  background: var(--mk-blue-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.tp-avatar-icon {
+  font-size: 2rem;
+}
+
+.tp-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--mk-text);
+  margin-bottom: 0.3rem;
+}
+
+.tp-designation {
+  font-size: 0.9rem;
+  color: var(--mk-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.tp-level-badge {
+  display: inline-block;
+  background: var(--mk-blue-light);
+  color: var(--mk-blue);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  margin-bottom: 1.75rem;
+}
+
+.tp-fields {
+  text-align: left;
+  border-top: 1px solid var(--mk-border);
+  padding-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tp-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tp-field-label {
+  font-size: 0.85rem;
+  color: var(--mk-text-muted);
+  font-weight: 500;
+  min-width: 130px;
+}
+
+.tp-field-value {
+  font-size: 0.9rem;
+  color: var(--mk-text);
+  font-weight: 500;
+  text-align: right;
+}
+
+.tp-readonly-note {
+  font-size: 0.78rem;
+  color: var(--mk-text-muted);
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  border-top: 1px solid var(--mk-border);
+  padding-top: 1rem;
+}

@@ -1,0 +1,207 @@
+/* ── Page layout ── */
+.tc-page {
+  max-width: 960px;
+}
+
+.tc-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tc-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--mk-text);
+  margin-bottom: 0.15rem;
+}
+
+.tc-page-subtitle {
+  color: var(--mk-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Filter tabs ── */
+.tc-filter-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 2px solid var(--mk-border);
+  padding-bottom: 0;
+}
+
+.tc-filter-tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--mk-text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tc-filter-tab:hover {
+  color: var(--mk-text);
+}
+
+.tc-filter-tab.active {
+  color: var(--mk-blue);
+  border-bottom-color: var(--mk-blue);
+  font-weight: 600;
+}
+
+/* ── Card grid ── */
+.tc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.tc-card {
+  background: #fff;
+  border: 1px solid var(--mk-border);
+  border-radius: var(--mk-radius);
+  padding: 1.1rem 1.25rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.tc-card:hover {
+  box-shadow: var(--mk-shadow);
+  border-color: var(--mk-blue-light);
+}
+
+.tc-card-pinned {
+  border-left: 3px solid var(--mk-blue);
+}
+
+.tc-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+
+.tc-badge-pinned {
+  background-color: var(--mk-blue-light);
+  color: var(--mk-blue);
+  font-weight: 600;
+}
+
+.tc-badge-urgent {
+  background-color: var(--mk-pink-light);
+  color: var(--mk-pink);
+  font-weight: 600;
+}
+
+.tc-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--mk-text);
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tc-card-excerpt {
+  font-size: 0.82rem;
+  color: var(--mk-text-muted);
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
+.tc-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--mk-text-muted);
+  border-top: 1px solid var(--mk-border);
+  padding-top: 0.6rem;
+  margin-top: auto;
+}
+
+.tc-card-date {
+  flex: 1;
+  min-width: 0;
+}
+
+.tc-card-updated {
+  font-style: italic;
+}
+
+.tc-card-attachments {
+  white-space: nowrap;
+}
+
+/* ── Detail modal body ── */
+.tc-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--mk-text-muted);
+  background: var(--mk-surface);
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.tc-meta-sep {
+  color: var(--mk-border);
+}
+
+.tc-detail-body {
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--mk-text);
+}
+
+/* ── Attachment list ── */
+.tc-attachment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tc-attachment-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--mk-surface);
+  border-radius: 0.4rem;
+  font-size: 0.85rem;
+}
+
+/* ── Loading / empty states ── */
+.tc-spinner-wrap {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.tc-empty-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: var(--mk-text-muted);
+}
+
+.tc-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}

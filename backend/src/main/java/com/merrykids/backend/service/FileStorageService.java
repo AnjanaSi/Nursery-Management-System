@@ -74,6 +74,46 @@ public class FileStorageService {
             "image/jpeg", "image/png", "image/webp"
     );
 
+    private static final Set<String> ALLOWED_ATTACHMENT_TYPES = Set.of(
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    );
+
+    public StoredFile storeContentAttachment(MultipartFile file, String subDirectory) {
+        if (file == null || file.isEmpty()) {
+            throw new FileStorageException("Attachment file is required");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_ATTACHMENT_TYPES.contains(contentType)) {
+            throw new FileStorageException("Unsupported file type. Allowed: PDF, JPG, PNG, WEBP, DOCX");
+        }
+
+        long maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.getSize() > maxSize) {
+            throw new FileStorageException("File size exceeds the maximum limit of 10MB");
+        }
+
+        String originalName = file.getOriginalFilename();
+        String extension = getExtension(originalName);
+        String storedName = UUID.randomUUID() + extension;
+        Path targetDir = uploadPath.resolve(subDirectory);
+        Path targetPath = targetDir.resolve(storedName);
+
+        try {
+            Files.createDirectories(targetDir);
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            log.info("Attachment stored: {} -> {}", originalName, targetPath);
+        } catch (IOException e) {
+            throw new FileStorageException("Failed to store attachment: " + originalName, e);
+        }
+
+        return new StoredFile(originalName, storedName, targetPath.toString());
+    }
+
     public StoredFile storeImage(MultipartFile file, String subDirectory) {
         validateImage(file);
 

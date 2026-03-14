@@ -22,11 +22,13 @@ public class FileStorageConfig {
         Path announcementsDir = Paths.get(uploadDir, "admissions", "announcements");
         Path submissionsDir = Paths.get(uploadDir, "admissions", "submissions");
         Path staffPhotosDir = Paths.get(uploadDir, "staff", "photos");
+        Path teacherContentDir = Paths.get(uploadDir, "teacher-content", "attachments");
 
         Files.createDirectories(announcementsDir);
         Files.createDirectories(submissionsDir);
         Files.createDirectories(staffPhotosDir);
+        Files.createDirectories(teacherContentDir);
 
-        log.info("Upload directories created: {}, {}, {}", announcementsDir, submissionsDir, staffPhotosDir);
+        log.info("Upload directories created: {}, {}, {}, {}", announcementsDir, submissionsDir, staffPhotosDir, teacherContentDir);
     }
 }

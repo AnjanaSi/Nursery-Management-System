@@ -21,4 +21,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>,
     Optional<Teacher> findByIdAndIsDeletedFalse(Long id);
 
     Optional<Teacher> findByUserId(Long userId);
+
+    Optional<Teacher> findByUser_EmailAndIsDeletedFalse(String email);
 }
