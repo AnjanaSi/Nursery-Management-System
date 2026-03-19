@@ -17,4 +17,8 @@ public interface PortalContentRepository extends JpaRepository<PortalContent, Lo
 
     List<PortalContent> findByTargetLevelAndTypeAndAcademicYearAndArchived(
             LevelAssigned targetLevel, ContentType type, String academicYear, boolean archived);
+
+    Page<PortalContent> findByTargetLevelAndTypeAndAcademicYearAndArchived(
+            LevelAssigned targetLevel, ContentType type, String academicYear, boolean archived,
+            Pageable pageable);
 }

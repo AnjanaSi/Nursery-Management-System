@@ -130,10 +130,10 @@ public class TeacherService {
             if (teacher.getUser() != null) {
                 Long userId = teacher.getUser().getId();
 
-                // prevent collision with another user account
-                if (userRepository.existsByEmailAndIdNot(request.getEmail(), userId)) {
+                // Only active users reserve the email — disabled users do not block email updates
+                if (userRepository.existsByEmailIgnoreCaseAndActiveTrueAndIdNot(request.getEmail(), userId)) {
                     throw new IllegalArgumentException(
-                            "This email is already used by another user account: " + request.getEmail());
+                            "This email is already used by another active user account: " + request.getEmail());
                 }
 
                 teacher.getUser().setEmail(request.getEmail());

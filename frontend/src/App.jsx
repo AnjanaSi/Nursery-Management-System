@@ -16,7 +16,10 @@ import StudentFormPage from "./pages/StudentFormPage";
 import StudentsListPage from "./pages/StudentsListPage";
 import StudentDetailPage from "./pages/StudentDetailPage";
 import YearTransitionPage from "./pages/YearTransitionPage";
-import ParentDashboard from "./pages/ParentDashboard";
+import ParentLayout from "./components/ParentLayout";
+import ParentAnnouncementsPage from "./pages/ParentAnnouncementsPage";
+import ParentHomeworkPage from "./pages/ParentHomeworkPage";
+import ParentChildProfilePage from "./pages/ParentChildProfilePage";
 import TeacherAnnouncementsPage from "./pages/TeacherAnnouncementsPage";
 import TeacherHomeworkPage from "./pages/TeacherHomeworkPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
@@ -66,9 +69,14 @@ function App() {
           </Route>
         </Route>
 
-        {/* Parent routes */}
+        {/* Parent routes with sidebar layout */}
         <Route element={<ProtectedRoute allowedRole="PARENT" />}>
-          <Route path="/parent" element={<ParentDashboard />} />
+          <Route element={<ParentLayout />}>
+            <Route path="/parent" element={<Navigate to="/parent/announcements" replace />} />
+            <Route path="/parent/announcements" element={<ParentAnnouncementsPage />} />
+            <Route path="/parent/homework" element={<ParentHomeworkPage />} />
+            <Route path="/parent/child-profile" element={<ParentChildProfilePage />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

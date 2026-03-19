@@ -12,4 +12,6 @@ public interface GuardianRepository extends JpaRepository<Guardian, Long> {
     Optional<Guardian> findByEmailIgnoreCaseAndIsDeletedFalse(String email);
 
     Optional<Guardian> findByNicAndIsDeletedFalse(String nic);
+
+    Optional<Guardian> findByUser_EmailAndIsDeletedFalse(String email);
 }

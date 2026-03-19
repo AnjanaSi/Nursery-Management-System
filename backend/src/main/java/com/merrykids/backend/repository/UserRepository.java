@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     boolean existsByEmailAndIdNot(String email, Long id);
+
+    // Only active users reserve an email. Use this when checking for collision during email updates.
+    boolean existsByEmailIgnoreCaseAndActiveTrueAndIdNot(String email, Long id);
 }

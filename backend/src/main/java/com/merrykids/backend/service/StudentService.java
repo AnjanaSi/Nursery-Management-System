@@ -171,31 +171,18 @@ public class StudentService {
             throw new IllegalArgumentException("Guardian already has an active portal account");
         }
 
-        // Reuse or create user via UserService
-        if (guardian.getUser() != null && !guardian.getUser().isActive()) {
-            // Reactivate existing disabled account
-            CreateUserRequest userRequest = new CreateUserRequest();
-            userRequest.setEmail(guardian.getUser().getEmail());
-            userRequest.setRole(Role.PARENT);
-            userService.createUser(userRequest); // handles reactivation
-        } else {
-            // Check if a user with this email already exists
-            User existingUser = userRepository.findByEmailIgnoreCase(guardian.getEmail()).orElse(null);
-            if (existingUser != null) {
-                guardian.setUser(existingUser);
-                guardianRepository.save(guardian);
-            } else {
-                CreateUserRequest userRequest = new CreateUserRequest();
-                userRequest.setEmail(guardian.getEmail());
-                userRequest.setRole(Role.PARENT);
-                CreateUserResponse userResponse = userService.createUser(userRequest);
+        // Always provision via UserService using guardian's current contact email.
+        // UserService enforces the email reuse rule: active users block, disabled users are reactivated
+        // (and their role updated if needed). This avoids bypassing role/active checks.
+        CreateUserRequest userRequest = new CreateUserRequest();
+        userRequest.setEmail(guardian.getEmail());
+        userRequest.setRole(Role.PARENT);
+        CreateUserResponse userResponse = userService.createUser(userRequest);
 
-                User user = userRepository.findById(userResponse.getId())
-                        .orElseThrow(() -> new NotFoundException("User not found"));
-                guardian.setUser(user);
-                guardianRepository.save(guardian);
-            }
-        }
+        User user = userRepository.findById(userResponse.getId())
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        guardian.setUser(user);
+        guardianRepository.save(guardian);
 
         log.info("Portal account created/reused for guardian: {} ({})", guardian.getFullName(), guardian.getEmail());
         return toGuardianResponse(link);
@@ -358,11 +345,11 @@ public class StudentService {
                 // Handle email change with login update
                 if (dto.getEmail() != null && !dto.getEmail().equalsIgnoreCase(guardian.getEmail())) {
                     if (guardian.getUser() != null && Boolean.TRUE.equals(dto.getUpdateLoginEmail())) {
-                        // Check for email collision with another user
-                        if (userRepository.existsByEmailAndIdNot(dto.getEmail(), guardian.getUser().getId())) {
+                        // Only active users reserve an email — disabled users do not block email updates
+                        if (userRepository.existsByEmailIgnoreCaseAndActiveTrueAndIdNot(dto.getEmail(), guardian.getUser().getId())) {
                             throw new IllegalArgumentException(
                                     "Email '" + dto.getEmail()
-                                            + "' is already used by another user account");
+                                            + "' is already used by another active user account");
                         }
                         guardian.getUser().setEmail(dto.getEmail());
                         userRepository.save(guardian.getUser());
@@ -405,30 +392,19 @@ public class StudentService {
             }
 
             try {
-                if (guardian.getUser() != null && !guardian.getUser().isActive()) {
-                    // Reactivate existing disabled account
-                    CreateUserRequest userRequest = new CreateUserRequest();
-                    userRequest.setEmail(guardian.getUser().getEmail());
-                    userRequest.setRole(Role.PARENT);
-                    userService.createUser(userRequest);
-                } else {
-                    // Check if user exists by email
-                    User existingUser = userRepository.findByEmailIgnoreCase(guardian.getEmail()).orElse(null);
-                    if (existingUser != null) {
-                        guardian.setUser(existingUser);
-                        guardianRepository.save(guardian);
-                    } else {
-                        CreateUserRequest userRequest = new CreateUserRequest();
-                        userRequest.setEmail(guardian.getEmail());
-                        userRequest.setRole(Role.PARENT);
-                        CreateUserResponse userResponse = userService.createUser(userRequest);
+                // Always provision via UserService using guardian's current contact email.
+                // UserService enforces the email reuse rule: active users block, disabled users
+                // are reactivated (role updated if needed). Guardian.user is always updated to
+                // the provisioned user so the link stays accurate.
+                CreateUserRequest userRequest = new CreateUserRequest();
+                userRequest.setEmail(guardian.getEmail());
+                userRequest.setRole(Role.PARENT);
+                CreateUserResponse userResponse = userService.createUser(userRequest);
 
-                        User user = userRepository.findById(userResponse.getId())
-                                .orElseThrow(() -> new NotFoundException("User not found"));
-                        guardian.setUser(user);
-                        guardianRepository.save(guardian);
-                    }
-                }
+                User user = userRepository.findById(userResponse.getId())
+                        .orElseThrow(() -> new NotFoundException("User not found"));
+                guardian.setUser(user);
+                guardianRepository.save(guardian);
                 log.info("Account created/reused for guardian: {}", guardian.getEmail());
             } catch (Exception e) {
                 log.warn("Failed to create account for guardian {}: {}", guardian.getEmail(), e.getMessage());

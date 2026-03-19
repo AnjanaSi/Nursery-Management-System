@@ -27,6 +27,7 @@ public class DevDataSeeder implements CommandLineRunner {
     private final GuardianRepository guardianRepository;
     private final StudentGuardianRepository studentGuardianRepository;
     private final PortalContentRepository portalContentRepository;
+    private final ParentContentViewRepository parentContentViewRepository;
 
     @Override
     public void run(String... args) {
@@ -344,7 +345,36 @@ public class DevDataSeeder implements CommandLineRunner {
                 .relationshipType(GuardianRelationshipType.MOTHER)
                 .build());
 
-        log.info("Student seed data created: 2 students, 4 guardians (1 with linked account).");
+        // Student 3 — ACTIVE UKG1, second child of Nimal Silva (parent@example.com)
+        // This enables the multi-child selector in the Parent Portal demo
+        String ukg1BatchCode = String.format("%02d%s", (year - 1) % 100, "LKG1");
+        Student student3 = studentRepository.save(Student.builder()
+                .admissionNo("MK-" + ukg1BatchCode + "-0001")
+                .fullName("Lily Silva")
+                .dateOfBirth(LocalDate.of(2019, 6, 5))
+                .gender(Gender.FEMALE)
+                .entryYear(year - 1)
+                .entryLevel(LevelAssigned.LKG1)
+                .currentLevel(LevelAssigned.UKG1)
+                .batchCode(ukg1BatchCode)
+                .status(StudentStatus.ACTIVE)
+                .enrollmentDate(LocalDate.of(year - 1, 1, 10))
+                .notes("Second child of Nimal Silva — demo for parent portal multi-child selector.")
+                .build());
+
+        studentGuardianRepository.save(StudentGuardian.builder()
+                .student(student3)
+                .guardian(father)
+                .relationshipType(GuardianRelationshipType.FATHER)
+                .build());
+
+        studentGuardianRepository.save(StudentGuardian.builder()
+                .student(student3)
+                .guardian(mother)
+                .relationshipType(GuardianRelationshipType.MOTHER)
+                .build());
+
+        log.info("Student seed data created: 3 students, 4 guardians (1 guardian with 2 active children for parent portal demo).");
     }
 
     private void seedPortalContent() {
@@ -448,7 +478,7 @@ public class DevDataSeeder implements CommandLineRunner {
                 .archived(true)
                 .build());
 
-        // UKG1 Announcements (for Anoma's level)
+        // UKG1 Announcements (for Anoma's level — Lily Silva sees these)
         portalContentRepository.save(PortalContent.builder()
                 .type(ContentType.ANNOUNCEMENT)
                 .title("UKG1 Term 2 Begins — Important Updates")
@@ -459,6 +489,40 @@ public class DevDataSeeder implements CommandLineRunner {
                 .pinned(true)
                 .build());
 
-        log.info("Portal content seed data created for LKG1 and UKG1.");
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.ANNOUNCEMENT)
+                .title("UKG1 Uniform Reminder")
+                .body("Dear Parents,\n\nPlease ensure your child wears the full school uniform every Monday and Friday. Sports attire is permitted on Tuesdays and Thursdays for PE days.\n\nThank you for your cooperation.")
+                .targetLevel(LevelAssigned.UKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(anoma)
+                .urgent(true)
+                .build());
+
+        // UKG1 Homework (for Anoma's level — Lily Silva sees these)
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.HOMEWORK)
+                .title("Reading Practice — Short Sentences")
+                .body("Dear Parents,\n\nThis week, please help your child read aloud 5 short sentences from their reading booklet (pages 12–14). Aim for one practice session each day.\n\n"
+                        + "Encourage them to point to each word as they read. Let them try independently first before offering help.")
+                .targetLevel(LevelAssigned.UKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(anoma)
+                .category("Reading")
+                .dueDate(LocalDate.now().plusDays(5))
+                .build());
+
+        portalContentRepository.save(PortalContent.builder()
+                .type(ContentType.HOMEWORK)
+                .title("Number Writing — 1 to 20")
+                .body("Dear Parents,\n\nPlease ask your child to write the numbers 1 to 20 in their maths workbook neatly. Aim to complete one page per day.\n\n"
+                        + "You can also practice by asking them to count objects around the home and write the total number.")
+                .targetLevel(LevelAssigned.UKG1)
+                .academicYear(academicYear)
+                .createdByTeacher(anoma)
+                .category("Mathematics")
+                .build());
+
+        log.info("Portal content seed data created for LKG1 and UKG1 (including homework for parent portal demo).");
     }
 }

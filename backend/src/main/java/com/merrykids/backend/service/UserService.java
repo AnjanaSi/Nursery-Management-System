@@ -69,35 +69,34 @@ public class UserService {
 
         User existing = userRepository.findByEmailIgnoreCase(email).orElse(null);
 
-        // If user exists
+        // Email Reuse Rule:
+        //   - one email = one user row (enforced by DB UNIQUE constraint on users.email)
+        //   - ACTIVE users (any role) reserve the email; no second account can be created
+        //   - DISABLED/inactive users do NOT reserve the email
+        //   - A disabled user row is reactivated and its role updated to match the new request
+        //     (e.g. a previously-disabled PARENT can become a TEACHER for the same email)
         if (existing != null) {
-
-            // If email is already used by another role, block
-            if (existing.getRole() != request.getRole()) {
+            if (existing.isActive()) {
+                // Active user (any role) blocks creation — email is already in use
                 throw new DuplicateEmailException("Email already exists: " + email);
             }
 
-            // Same role exists
-            if (!existing.isActive()) {
-                // ✅ Reactivate disabled user (reuse)
-                String tempPassword = passwordGenerator.generateTempPassword(12);
-                existing.setPasswordHash(passwordEncoder.encode(tempPassword));
-                existing.setActive(true);
-                existing.setMustChangePassword(true);
+            // Inactive user (any role) → reactivate for the requested role
+            String tempPassword = passwordGenerator.generateTempPassword(12);
+            existing.setRole(request.getRole()); // role may change (e.g. PARENT → TEACHER)
+            existing.setPasswordHash(passwordEncoder.encode(tempPassword));
+            existing.setActive(true);
+            existing.setMustChangePassword(true);
 
-                User saved = userRepository.save(existing);
-                emailService.sendWelcomeEmail(saved.getEmail(), tempPassword, saved.getRole().name());
+            User saved = userRepository.save(existing);
+            emailService.sendWelcomeEmail(saved.getEmail(), tempPassword, saved.getRole().name());
 
-                return new CreateUserResponse(
-                        saved.getId(),
-                        saved.getEmail(),
-                        saved.getRole().name(),
-                        saved.isActive(),
-                        saved.isMustChangePassword());
-            }
-
-            // Same role and already active -> duplicate
-            throw new DuplicateEmailException("Email already exists: " + email);
+            return new CreateUserResponse(
+                    saved.getId(),
+                    saved.getEmail(),
+                    saved.getRole().name(),
+                    saved.isActive(),
+                    saved.isMustChangePassword());
         }
 
         // Create new user (same as your current logic)

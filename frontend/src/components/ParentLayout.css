@@ -1,0 +1,126 @@
+.parent-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Desktop sidebar ── */
+.parent-sidebar {
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid var(--mk-border);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.parent-sidebar-brand {
+  padding: 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--mk-border);
+}
+
+.parent-sidebar-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.parent-sidebar-brand-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--mk-blue);
+  line-height: 1.2;
+}
+
+/* ── Nav items ── */
+.parent-sidebar-nav {
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.parent-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: var(--mk-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+
+.parent-menu-item:hover {
+  background: var(--mk-surface);
+  color: var(--mk-text);
+}
+
+.parent-menu-item.active {
+  background: var(--mk-blue-light);
+  color: var(--mk-blue);
+  font-weight: 600;
+}
+
+.parent-menu-icon {
+  font-size: 1.1rem;
+  width: 1.5rem;
+  text-align: center;
+}
+
+/* ── Sidebar footer ── */
+.parent-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--mk-border);
+}
+
+.parent-sidebar-email {
+  font-size: 0.78rem;
+  color: var(--mk-text-muted);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Content area ── */
+.parent-content {
+  margin-left: 260px;
+  flex: 1;
+  background: var(--mk-surface);
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* ── Mobile top bar ── */
+.parent-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid var(--mk-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 99;
+}
+
+/* ── Mobile responsive ── */
+@media (max-width: 991.98px) {
+  .parent-content {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: calc(56px + 1rem);
+  }
+}
