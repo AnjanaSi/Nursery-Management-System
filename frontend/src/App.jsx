@@ -7,6 +7,10 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import AdmissionsPage from "./pages/AdmissionsPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminAdmissionsPage from "./pages/AdminAdmissionsPage";
+import AdminsLandingPage from "./pages/AdminsLandingPage";
+import AdminsAddPage from "./pages/AdminsAddPage";
+import AdminsListPage from "./pages/AdminsListPage";
+import AdminsDetailPage from "./pages/AdminsDetailPage";
 import StaffLandingPage from "./pages/StaffLandingPage";
 import StaffAddPage from "./pages/StaffAddPage";
 import StaffListPage from "./pages/StaffListPage";
@@ -46,6 +50,10 @@ function App() {
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/admissions" element={<AdminAdmissionsPage />} />
+            <Route path="/admin/admins" element={<AdminsLandingPage />} />
+            <Route path="/admin/admins/new" element={<AdminsAddPage />} />
+            <Route path="/admin/admins/list" element={<AdminsListPage />} />
+            <Route path="/admin/admins/:id" element={<AdminsDetailPage />} />
             <Route path="/admin/staff" element={<StaffLandingPage />} />
             <Route path="/admin/staff/new" element={<StaffAddPage />} />
             <Route path="/admin/staff/list" element={<StaffListPage />} />

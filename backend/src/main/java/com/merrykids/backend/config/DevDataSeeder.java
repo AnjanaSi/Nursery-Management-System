@@ -28,6 +28,7 @@ public class DevDataSeeder implements CommandLineRunner {
     private final StudentGuardianRepository studentGuardianRepository;
     private final PortalContentRepository portalContentRepository;
     private final ParentContentViewRepository parentContentViewRepository;
+    private final AdminProfileRepository adminProfileRepository;
 
     @Override
     public void run(String... args) {
@@ -36,6 +37,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedTeachers();
         seedStudents();
         seedPortalContent();
+        seedAdminProfiles();
     }
 
     private void seedUsers() {
@@ -524,5 +526,41 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Portal content seed data created for LKG1 and UKG1 (including homework for parent portal demo).");
+    }
+
+    private void seedAdminProfiles() {
+        if (adminProfileRepository.count() > 0) {
+            log.info("Admin profiles already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding admin profile data...");
+
+        // Profile 1 — linked to the existing admin@example.com user account (Owner)
+        User adminUser = userRepository.findByEmail("admin@example.com").orElse(null);
+        adminProfileRepository.save(AdminProfile.builder()
+                .fullName("Sandya Perera")
+                .email("admin@example.com")
+                .phoneNumber("+94771000001")
+                .address("10 School Lane, Colombo 05")
+                .nic("791234567V")
+                .dateOfBirth(LocalDate.of(1979, 4, 14))
+                .adminType(AdminType.OWNER)
+                .notes("Founder and owner of MerryKids International Montessori.")
+                .user(adminUser)
+                .build());
+
+        // Profile 2 — no user account yet (Family Member, available for demo provisioning)
+        adminProfileRepository.save(AdminProfile.builder()
+                .fullName("Roshan Perera")
+                .email("roshan.perera@example.com")
+                .phoneNumber("+94771000002")
+                .address("10 School Lane, Colombo 05")
+                .dateOfBirth(LocalDate.of(1982, 9, 25))
+                .adminType(AdminType.FAMILY_MEMBER)
+                .notes("Brother of the owner. Assists with administrative duties.")
+                .build());
+
+        log.info("Admin profile seed data created: 2 profiles (1 with linked account).");
     }
 }

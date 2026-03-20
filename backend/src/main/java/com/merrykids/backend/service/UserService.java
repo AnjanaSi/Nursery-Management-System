@@ -61,10 +61,6 @@ public class UserService {
     private final EmailService emailService;
 
     public CreateUserResponse createUser(CreateUserRequest request) {
-        if (request.getRole() == Role.ADMIN) {
-            throw new IllegalArgumentException("Cannot create users with ADMIN role");
-        }
-
         String email = request.getEmail() == null ? "" : request.getEmail().trim();
 
         User existing = userRepository.findByEmailIgnoreCase(email).orElse(null);

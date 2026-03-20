@@ -22,6 +22,13 @@ const cards = [
     icon: "\uD83D\uDCCB",
     disabled: false,
   },
+  {
+    title: "Admin Management",
+    description: "Manage admin profiles and system access.",
+    path: "/admin/admins",
+    icon: "\uD83D\uDEE1\uFE0F",
+    disabled: false,
+  },
 ];
 
 export default function AdminDashboard() {
@@ -36,7 +43,7 @@ export default function AdminDashboard() {
 
       <div className="row g-4">
         {cards.map((card) => (
-          <div key={card.title} className="col-md-4">
+          <div key={card.title} className="col-md-6">
             <div
               className="card border-0 shadow-sm rounded-4 p-4 h-100"
               style={{

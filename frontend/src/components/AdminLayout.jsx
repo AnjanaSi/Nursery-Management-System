@@ -8,7 +8,7 @@ const menuItems = [
   { label: "Admissions", path: "/admin/admissions", icon: "\uD83D\uDCCB" },
   { label: "Staff", path: "/admin/staff", icon: "\uD83D\uDC65" },
   { label: "Students", path: "/admin/students", icon: "\uD83C\uDF93" },
-  { label: "Parents", path: "/admin/parents", icon: "\uD83C\uDFE0", disabled: true },
+  { label: "Admins", path: "/admin/admins", icon: "\uD83D\uDEE1\uFE0F" },
 ];
 
 function SidebarContent({ onNavClick }) {
