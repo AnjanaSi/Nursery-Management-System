@@ -5,7 +5,11 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import AdmissionsPage from "./pages/AdmissionsPage";
+import PublicEventsPage from "./pages/PublicEventsPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminEventsLandingPage from "./pages/AdminEventsLandingPage";
+import AdminEventsListPage from "./pages/AdminEventsListPage";
+import AdminEventFormPage from "./pages/AdminEventFormPage";
 import AdminAdmissionsPage from "./pages/AdminAdmissionsPage";
 import AdminsLandingPage from "./pages/AdminsLandingPage";
 import AdminsAddPage from "./pages/AdminsAddPage";
@@ -38,6 +42,7 @@ function App() {
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/admissions" element={<AdmissionsPage />} />
+        <Route path="/events" element={<PublicEventsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -64,6 +69,10 @@ function App() {
             <Route path="/admin/students/year-transition" element={<YearTransitionPage />} />
             <Route path="/admin/students/:id/edit" element={<StudentFormPage />} />
             <Route path="/admin/students/:id" element={<StudentDetailPage />} />
+            <Route path="/admin/events" element={<AdminEventsLandingPage />} />
+            <Route path="/admin/events/new" element={<AdminEventFormPage />} />
+            <Route path="/admin/events/list" element={<AdminEventsListPage />} />
+            <Route path="/admin/events/:id/edit" element={<AdminEventFormPage />} />
           </Route>
         </Route>
 

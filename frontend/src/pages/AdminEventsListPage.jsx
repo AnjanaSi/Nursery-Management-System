@@ -1,0 +1,423 @@
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.jpg";
+import {
+  getAdminEventsList,
+  deleteEvent,
+  bulkDeleteEvents,
+} from "../services/api/eventsService";
+import "./AdminPages.css";
+
+export default function AdminEventsListPage() {
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+
+  const deleteModalRef = useRef(null);
+  const deleteModalInstance = useRef(null);
+  const bulkDeleteModalRef = useRef(null);
+  const bulkDeleteModalInstance = useRef(null);
+
+  const fetchEvents = useCallback(
+    async (page = 0) => {
+      setLoading(true);
+      setError("");
+      try {
+        const res = await getAdminEventsList({
+          search: search || undefined,
+          page,
+          size: 10,
+        });
+        const pg = res.data;
+        setEvents(pg.content || []);
+        setTotalPages(pg.totalPages || 0);
+        setCurrentPage(pg.number || 0);
+        setSelectedIds(new Set());
+      } catch {
+        setError("Failed to load events.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [search]
+  );
+
+  useEffect(() => {
+    fetchEvents(0);
+  }, [fetchEvents]);
+
+  useEffect(() => {
+    if (deleteModalRef.current) {
+      deleteModalInstance.current = new window.bootstrap.Modal(deleteModalRef.current);
+    }
+    if (bulkDeleteModalRef.current) {
+      bulkDeleteModalInstance.current = new window.bootstrap.Modal(bulkDeleteModalRef.current);
+    }
+    return () => {
+      deleteModalInstance.current?.dispose();
+      bulkDeleteModalInstance.current?.dispose();
+    };
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchEvents(0);
+  };
+
+  const handleClear = () => {
+    setSearch("");
+  };
+
+  const openDeleteModal = (id) => {
+    setDeleteId(id);
+    deleteModalInstance.current?.show();
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    setDeleting(true);
+    try {
+      await deleteEvent(deleteId);
+      deleteModalInstance.current?.hide();
+      setDeleteId(null);
+      fetchEvents(currentPage);
+    } catch (err) {
+      setError(err.response?.data?.error || "Failed to delete event.");
+      deleteModalInstance.current?.hide();
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const confirmBulkDelete = async () => {
+    setBulkDeleting(true);
+    try {
+      await bulkDeleteEvents([...selectedIds]);
+      bulkDeleteModalInstance.current?.hide();
+      setSelectedIds(new Set());
+      fetchEvents(currentPage);
+    } catch (err) {
+      setError(err.response?.data?.error || "Bulk delete failed.");
+      bulkDeleteModalInstance.current?.hide();
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === events.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(events.map((e) => e.id)));
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "—";
+    return new Date(dateStr + "T00:00:00").toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const formatDateTime = (dateStr) => {
+    if (!dateStr) return "—";
+    return new Date(dateStr).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+    const pages = [];
+    for (let i = 0; i < totalPages; i++) {
+      if (i === 0 || i === totalPages - 1 || (i >= currentPage - 2 && i <= currentPage + 2)) {
+        pages.push(i);
+      } else if (pages[pages.length - 1] !== -1) {
+        pages.push(-1);
+      }
+    }
+    return (
+      <nav className="d-flex justify-content-center mt-3">
+        <ul className="pagination pagination-sm mb-0">
+          <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => fetchEvents(currentPage - 1)}>
+              &laquo;
+            </button>
+          </li>
+          {pages.map((p, idx) =>
+            p === -1 ? (
+              <li key={`e${idx}`} className="page-item disabled">
+                <span className="page-link">&hellip;</span>
+              </li>
+            ) : (
+              <li key={p} className={`page-item ${p === currentPage ? "active" : ""}`}>
+                <button className="page-link" onClick={() => fetchEvents(p)}>
+                  {p + 1}
+                </button>
+              </li>
+            )
+          )}
+          <li className={`page-item ${currentPage >= totalPages - 1 ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => fetchEvents(currentPage + 1)}>
+              &raquo;
+            </button>
+          </li>
+        </ul>
+      </nav>
+    );
+  };
+
+  return (
+    <div>
+      <div className="admin-mgmt-header d-flex align-items-center gap-3">
+        <img src={logo} alt="MerryKids" className="admin-mgmt-header-logo" />
+        <div>
+          <h5 className="fw-bold mb-0" style={{ color: "var(--mk-blue)" }}>
+            Events Directory
+          </h5>
+          <small className="text-muted">View and manage all nursery events</small>
+        </div>
+      </div>
+
+      {/* Search */}
+      <form className="card border-0 shadow-sm rounded-4 p-3 mb-4" onSubmit={handleSearch}>
+        <div className="row g-2 align-items-end">
+          <div className="col-md-6">
+            <label className="form-label small fw-semibold">Search</label>
+            <input
+              type="text"
+              className="form-control form-control-sm rounded-3"
+              placeholder="Search by title or description..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="col-md-6 d-flex gap-2 flex-wrap">
+            <button type="submit" className="btn btn-primary btn-sm rounded-3">
+              Search
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-sm rounded-3"
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+            {selectedIds.size > 0 && (
+              <button
+                type="button"
+                className="btn btn-danger btn-sm rounded-3"
+                onClick={() => bulkDeleteModalInstance.current?.show()}
+              >
+                Delete Selected ({selectedIds.size})
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn btn-sm rounded-3 ms-auto"
+              style={{ background: "var(--mk-pink)", color: "#fff", border: "none" }}
+              onClick={() => navigate("/admin/events/new")}
+            >
+              + Add Event
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {error && (
+        <div className="alert alert-danger alert-dismissible fade show">
+          {error}
+          <button type="button" className="btn-close" onClick={() => setError("")} />
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-center py-5">
+          <span className="spinner-border text-primary" />
+        </div>
+      ) : events.length === 0 ? (
+        <div className="admin-empty-state">
+          <div className="admin-empty-state-icon">📅</div>
+          <h5>No Events Found</h5>
+          <p>Try adjusting your search or add a new event.</p>
+        </div>
+      ) : (
+        <>
+          <div className="table-responsive">
+            <table className="table table-hover admin-table">
+              <thead>
+                <tr>
+                  <th style={{ width: 40 }}>
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={selectedIds.size === events.length && events.length > 0}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                  <th>Title</th>
+                  <th className="d-none d-md-table-cell">Event Date</th>
+                  <th className="d-none d-lg-table-cell">Photos</th>
+                  <th className="d-none d-lg-table-cell">Created</th>
+                  <th className="d-none d-lg-table-cell">Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((ev) => (
+                  <tr key={ev.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={selectedIds.has(ev.id)}
+                        onChange={() => toggleSelect(ev.id)}
+                      />
+                    </td>
+                    <td className="fw-semibold">{ev.title}</td>
+                    <td className="d-none d-md-table-cell">{formatDate(ev.eventDate)}</td>
+                    <td className="d-none d-lg-table-cell">
+                      <span className="badge bg-light text-dark border">
+                        {ev.photoCount} photo{ev.photoCount !== 1 ? "s" : ""}
+                      </span>
+                    </td>
+                    <td className="d-none d-lg-table-cell" style={{ fontSize: "0.85rem" }}>
+                      {formatDateTime(ev.createdAt)}
+                    </td>
+                    <td className="d-none d-lg-table-cell" style={{ fontSize: "0.85rem" }}>
+                      {formatDateTime(ev.updatedAt)}
+                    </td>
+                    <td>
+                      <div className="d-flex gap-1">
+                        <button
+                          className="btn btn-sm btn-outline-primary rounded-3"
+                          onClick={() => navigate(`/admin/events/${ev.id}/edit`)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="btn btn-sm btn-outline-danger rounded-3"
+                          onClick={() => openDeleteModal(ev.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {renderPagination()}
+        </>
+      )}
+
+      <div className="mt-3">
+        <button
+          className="btn btn-outline-secondary rounded-3"
+          onClick={() => navigate("/admin/events")}
+        >
+          &larr; Back to Events Management
+        </button>
+      </div>
+
+      {/* Single Delete Modal */}
+      <div className="modal fade" ref={deleteModalRef} tabIndex={-1}>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content rounded-4">
+            <div className="modal-header border-0">
+              <h5 className="modal-title fw-bold" style={{ color: "var(--mk-blue)" }}>
+                Confirm Delete
+              </h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" />
+            </div>
+            <div className="modal-body">
+              <p className="admin-confirm-text">
+                Are you sure you want to delete this event? It will be hidden from the public
+                site immediately. This action uses soft-delete and can be reversed by an admin.
+              </p>
+            </div>
+            <div className="modal-footer border-0">
+              <button
+                type="button"
+                className="btn btn-outline-secondary rounded-3"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger rounded-3"
+                onClick={confirmDelete}
+                disabled={deleting}
+              >
+                {deleting && <span className="spinner-border spinner-border-sm me-2" />}
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bulk Delete Modal */}
+      <div className="modal fade" ref={bulkDeleteModalRef} tabIndex={-1}>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content rounded-4">
+            <div className="modal-header border-0">
+              <h5 className="modal-title fw-bold" style={{ color: "var(--mk-blue)" }}>
+                Confirm Bulk Delete
+              </h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" />
+            </div>
+            <div className="modal-body">
+              <p className="admin-confirm-text">
+                Are you sure you want to delete{" "}
+                <strong>{selectedIds.size} event{selectedIds.size !== 1 ? "s" : ""}</strong>?
+                They will be hidden from the public site immediately.
+              </p>
+            </div>
+            <div className="modal-footer border-0">
+              <button
+                type="button"
+                className="btn btn-outline-secondary rounded-3"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger rounded-3"
+                onClick={confirmBulkDelete}
+                disabled={bulkDeleting}
+              >
+                {bulkDeleting && <span className="spinner-border spinner-border-sm me-2" />}
+                Delete All
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,96 @@
+/* ── Event Cards ──────────────────────────────────────────────────── */
+
+.ev-card {
+  border: none;
+  border-radius: var(--mk-radius, 0.75rem);
+  box-shadow: var(--mk-shadow-sm, 0 1px 3px rgba(37, 99, 235, 0.08));
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.ev-card:hover {
+  box-shadow: var(--mk-shadow, 0 4px 16px rgba(37, 99, 235, 0.12));
+  transform: translateY(-3px);
+}
+
+.ev-cover-placeholder {
+  height: 200px;
+  background: var(--mk-blue-light, #DBEAFE);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  color: var(--mk-blue, #2563EB);
+}
+
+.ev-cover-img {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ev-card-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.9rem;
+  color: var(--mk-text-muted, #64748B);
+  line-height: 1.5;
+}
+
+.ev-date-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--mk-blue, #2563EB);
+  background: var(--mk-blue-light, #DBEAFE);
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Page Hero ────────────────────────────────────────────────────── */
+
+.ev-page-hero {
+  background: linear-gradient(135deg, var(--mk-blue, #2563EB) 0%, #1D4ED8 100%);
+  color: #fff;
+  padding: 3rem 0 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.ev-page-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ── Detail Modal ─────────────────────────────────────────────────── */
+
+.ev-modal-description {
+  white-space: pre-line;
+  line-height: 1.7;
+  color: var(--mk-text, #1E293B);
+}
+
+.ev-carousel-img {
+  max-height: 420px;
+  width: 100%;
+  object-fit: contain;
+  background: var(--mk-surface-alt, #F1F5F9);
+}
+
+/* ── Empty / Error States ─────────────────────────────────────────── */
+
+.ev-empty-state {
+  text-align: center;
+  padding: 5rem 1rem;
+  color: var(--mk-text-muted, #64748B);
+}
+
+.ev-empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}

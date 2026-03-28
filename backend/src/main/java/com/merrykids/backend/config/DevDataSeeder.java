@@ -29,6 +29,7 @@ public class DevDataSeeder implements CommandLineRunner {
     private final PortalContentRepository portalContentRepository;
     private final ParentContentViewRepository parentContentViewRepository;
     private final AdminProfileRepository adminProfileRepository;
+    private final NurseryEventRepository nurseryEventRepository;
 
     @Override
     public void run(String... args) {
@@ -38,6 +39,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedStudents();
         seedPortalContent();
         seedAdminProfiles();
+        seedEvents();
     }
 
     private void seedUsers() {
@@ -562,5 +564,43 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Admin profile seed data created: 2 profiles (1 with linked account).");
+    }
+
+    private void seedEvents() {
+        if (nurseryEventRepository.countByIsDeletedFalse() > 0) {
+            log.info("Events already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding event data...");
+
+        LocalDate today = LocalDate.now();
+
+        nurseryEventRepository.save(NurseryEvent.builder()
+                .title("Annual Sports Day")
+                .description("Our Annual Sports Day was a spectacular morning of fun-filled activities for all our little athletes! "
+                        + "Children competed in running races, obstacle courses, and team games, cheered on by proud parents and staff. "
+                        + "It was a wonderful celebration of teamwork, healthy competition, and the joy of movement.")
+                .eventDate(today.minusMonths(3))
+                .build());
+
+        int lastDecYear = (today.getMonthValue() >= 12) ? today.getYear() : today.getYear() - 1;
+        nurseryEventRepository.save(NurseryEvent.builder()
+                .title("Christmas Concert")
+                .description("Our Christmas Concert filled the hall with warmth, laughter, and festive cheer. "
+                        + "Children performed songs, dances, and short skits that showcased their creativity and confidence. "
+                        + "It was a magical evening shared with families and a beautiful way to close the year.")
+                .eventDate(LocalDate.of(lastDecYear, 12, 15))
+                .build());
+
+        nurseryEventRepository.save(NurseryEvent.builder()
+                .title("Art Exhibition")
+                .description("MerryKids hosted a vibrant Art Exhibition celebrating the creativity and imagination of every child. "
+                        + "Paintings, collages, and sculptures crafted throughout the term were displayed for parents and the community to admire. "
+                        + "Each piece told a unique story and reflected the wonderful artistic growth of our young learners.")
+                .eventDate(today.minusMonths(1))
+                .build());
+
+        log.info("Event seed data created: 3 events.");
     }
 }

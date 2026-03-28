@@ -8,6 +8,7 @@ const menuItems = [
   { label: "Admissions", path: "/admin/admissions", icon: "\uD83D\uDCCB" },
   { label: "Staff", path: "/admin/staff", icon: "\uD83D\uDC65" },
   { label: "Students", path: "/admin/students", icon: "\uD83C\uDF93" },
+  { label: "Events", path: "/admin/events", icon: "\uD83D\uDCC5" },
   { label: "Admins", path: "/admin/admins", icon: "\uD83D\uDEE1\uFE0F" },
 ];
 

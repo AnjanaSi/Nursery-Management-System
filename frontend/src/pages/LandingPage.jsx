@@ -85,6 +85,11 @@ export default function LandingPage() {
                 </a>
               </li>
               <li className="nav-item">
+                <Link to="/events" className="nav-link mk-nav-pill">
+                  Events
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/admissions" className="nav-link mk-nav-pill">
                   Admissions
                 </Link>

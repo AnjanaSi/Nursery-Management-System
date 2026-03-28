@@ -29,6 +29,13 @@ const cards = [
     icon: "\uD83D\uDEE1\uFE0F",
     disabled: false,
   },
+  {
+    title: "Events Management",
+    description: "Manage public events and photo galleries.",
+    path: "/admin/events",
+    icon: "\uD83D\uDCC5",
+    disabled: false,
+  },
 ];
 
 export default function AdminDashboard() {
