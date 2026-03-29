@@ -5,6 +5,8 @@ import com.merrykids.backend.repository.*;
 import com.merrykids.backend.util.AcademicYearUtil;
 import com.merrykids.backend.repository.AboutSectionConfigRepository;
 import com.merrykids.backend.repository.AboutCardRepository;
+import com.merrykids.backend.repository.ProgramSectionConfigRepository;
+import com.merrykids.backend.repository.ProgramCardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -34,6 +36,8 @@ public class DevDataSeeder implements CommandLineRunner {
     private final NurseryEventRepository nurseryEventRepository;
     private final AboutSectionConfigRepository aboutSectionConfigRepository;
     private final AboutCardRepository aboutCardRepository;
+    private final ProgramSectionConfigRepository programSectionConfigRepository;
+    private final ProgramCardRepository programCardRepository;
 
     @Override
     public void run(String... args) {
@@ -45,6 +49,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedAdminProfiles();
         seedEvents();
         seedAboutSection();
+        seedProgramSection();
     }
 
     private void seedUsers() {
@@ -646,5 +651,46 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("About section seed data created: 1 config, 3 cards (upload images via admin portal).");
+    }
+
+    private void seedProgramSection() {
+        if (programSectionConfigRepository.count() > 0) {
+            log.info("Program section already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding program section data...");
+
+        programSectionConfigRepository.save(ProgramSectionConfig.builder()
+                .id(1L)
+                .sectionTitle("Our Programs")
+                .subtitle("Thoughtfully designed programs that grow with your child at every stage.")
+                .build());
+
+        programCardRepository.save(ProgramCard.builder()
+                .title("Toddler Care")
+                .description("Gentle, nurturing care that supports early social and emotional development " +
+                             "through sensory play and routine.")
+                .ageRange("Ages 6m \u2013 2yrs")
+                .displayOrder(0)
+                .build());
+
+        programCardRepository.save(ProgramCard.builder()
+                .title("Preschool")
+                .description("Structured learning blended with creative play to prepare children for " +
+                             "school with confidence and joy.")
+                .ageRange("Ages 3 \u2013 4yrs")
+                .displayOrder(1)
+                .build());
+
+        programCardRepository.save(ProgramCard.builder()
+                .title("Activity Learning")
+                .description("Art, music, outdoor play, and STEM exploration that spark imagination " +
+                             "and build critical thinking skills.")
+                .ageRange("Ages 4 \u2013 5yrs")
+                .displayOrder(2)
+                .build());
+
+        log.info("Program section seed data created: 1 config, 3 cards (upload images via admin portal).");
     }
 }

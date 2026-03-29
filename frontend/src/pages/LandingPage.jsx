@@ -5,6 +5,7 @@ import logo from "../assets/logo.jpg";
 import "./LandingPage.css";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { getPublicAbout, getAboutCardImageUrl } from "../services/api/aboutSectionService";
+import { getPublicPrograms, getProgramCardImageUrl } from "../services/api/programSectionService";
 
 export default function LandingPage() {
   const loggedIn = isAuthenticated();
@@ -16,11 +17,20 @@ export default function LandingPage() {
   const [aboutError, setAboutError] = useState(false);
   const [showAllCards, setShowAllCards] = useState(false);
 
+  const [programData, setProgramData] = useState(null);
+  const [programLoading, setProgramLoading] = useState(true);
+  const [programError, setProgramError] = useState(false);
+  const [showAllPrograms, setShowAllPrograms] = useState(false);
+
   useEffect(() => {
     getPublicAbout()
       .then((res) => setAboutData(res.data))
       .catch(() => setAboutError(true))
       .finally(() => setAboutLoading(false));
+    getPublicPrograms()
+      .then((res) => setProgramData(res.data))
+      .catch(() => setProgramError(true))
+      .finally(() => setProgramLoading(false));
   }, []);
 
   return (
@@ -257,70 +267,94 @@ export default function LandingPage() {
       </section>
 
       {/* ==============================================================
-          PROGRAMS SECTION
+          PROGRAMS SECTION — dynamic, admin-managed
           ============================================================== */}
       <section className="mk-section-py mk-section-surface" id="programs">
         <div className="container">
+          {/* Heading & subtitle */}
           <div className="text-center mb-5">
-            <h2 className="mk-section-title">
-              Our <span>Programs</span>
-            </h2>
-            <p
-              className="text-muted mt-2"
-              style={{ maxWidth: "520px", margin: "0.5rem auto 0" }}
-            >
-              Thoughtfully designed programs that grow with your child at every
-              stage.
-            </p>
+            {programLoading ? (
+              <>
+                <div className="mk-skeleton mx-auto mb-3" style={{ height: 36, maxWidth: 280, borderRadius: 8 }} />
+                <div className="mk-skeleton mx-auto" style={{ height: 20, maxWidth: 480, borderRadius: 6 }} />
+              </>
+            ) : programError ? (
+              <div className="text-center py-3">
+                <p className="text-danger small mb-0">Unable to load Programs section content.</p>
+              </div>
+            ) : (
+              <>
+                <h2 className="mk-section-title">
+                  {programData?.config?.sectionTitle || "Our Programs"}
+                </h2>
+                <p
+                  className="text-muted mt-2"
+                  style={{ maxWidth: "520px", margin: "0.5rem auto 0" }}
+                >
+                  {programData?.config?.subtitle}
+                </p>
+              </>
+            )}
           </div>
 
-          <div className="row g-4">
-            <div className="col-md-4">
-              <div className="mk-program-card">
-                <div className="mk-program-card-header blue">
-                  <span className="mk-program-icon">&#128118;</span>
-                  <h5>Toddler Care</h5>
+          {/* Cards */}
+          {programLoading ? (
+            <div className="row g-4">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="col-md-4">
+                  <div className="mk-highlight-card">
+                    <div className="mk-skeleton mb-3" style={{ height: 180, borderRadius: 10 }} />
+                    <div className="mk-skeleton mb-2" style={{ height: 22, width: "60%" }} />
+                    <div className="mk-skeleton" style={{ height: 60, width: "100%" }} />
+                  </div>
                 </div>
-                <div className="mk-program-card-body">
-                  <p>
-                    Gentle, nurturing care that supports early social and
-                    emotional development through sensory play and routine.
-                  </p>
-                  <span className="mk-age-badge">Ages 6m – 2yrs</span>
-                </div>
-              </div>
+              ))}
             </div>
-            <div className="col-md-4">
-              <div className="mk-program-card">
-                <div className="mk-program-card-header pink">
-                  <span className="mk-program-icon">&#127856;</span>
-                  <h5>Preschool</h5>
-                </div>
-                <div className="mk-program-card-body">
-                  <p>
-                    Structured learning blended with creative play to prepare
-                    children for school with confidence and joy.
-                  </p>
-                  <span className="mk-age-badge">Ages 3 – 4yrs</span>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="mk-program-card">
-                <div className="mk-program-card-header slate">
-                  <span className="mk-program-icon">&#127912;</span>
-                  <h5>Activity Learning</h5>
-                </div>
-                <div className="mk-program-card-body">
-                  <p>
-                    Art, music, outdoor play, and STEM exploration that spark
-                    imagination and build critical thinking skills.
-                  </p>
-                  <span className="mk-age-badge">Ages 4 – 5yrs</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          ) : programError ? null : (
+            <>
+              {(() => {
+                const allCards = programData?.cards ?? [];
+                const visibleCards = showAllPrograms ? allCards : allCards.slice(0, 3);
+                return (
+                  <>
+                    <div className="row g-4">
+                      {visibleCards.map((card) => (
+                        <div key={card.id} className="col-md-4">
+                          <div className="mk-program-card">
+                            {card.imageUrl ? (
+                              <img
+                                src={getProgramCardImageUrl(card.id)}
+                                alt={card.title}
+                                className="mk-about-card-img"
+                              />
+                            ) : (
+                              <div className="mk-about-card-img-placeholder" />
+                            )}
+                            <div className="mk-program-card-body">
+                              <h5 className="fw-bold mb-2">{card.title}</h5>
+                              <p className="text-muted mb-3">{card.description}</p>
+                              <span className="mk-age-badge">{card.ageRange}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {allCards.length > 3 && (
+                      <div className="text-center mt-4">
+                        <button
+                          className="btn btn-outline-primary rounded-pill px-4"
+                          onClick={() => setShowAllPrograms((prev) => !prev)}
+                        >
+                          {showAllPrograms ? "See Less" : "See More"}
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </>
+          )}
         </div>
       </section>
 

@@ -13,6 +13,9 @@ import AdminEventFormPage from "./pages/AdminEventFormPage";
 import AdminAboutSectionLandingPage from "./pages/AdminAboutSectionLandingPage";
 import AdminAboutSectionCardsPage from "./pages/AdminAboutSectionCardsPage";
 import AdminAboutSectionCardFormPage from "./pages/AdminAboutSectionCardFormPage";
+import AdminProgramSectionLandingPage from "./pages/AdminProgramSectionLandingPage";
+import AdminProgramSectionCardsPage from "./pages/AdminProgramSectionCardsPage";
+import AdminProgramSectionCardFormPage from "./pages/AdminProgramSectionCardFormPage";
 import AdminAdmissionsPage from "./pages/AdminAdmissionsPage";
 import AdminsLandingPage from "./pages/AdminsLandingPage";
 import AdminsAddPage from "./pages/AdminsAddPage";
@@ -80,6 +83,10 @@ function App() {
             <Route path="/admin/about-section/cards" element={<AdminAboutSectionCardsPage />} />
             <Route path="/admin/about-section/cards/new" element={<AdminAboutSectionCardFormPage />} />
             <Route path="/admin/about-section/cards/:id/edit" element={<AdminAboutSectionCardFormPage />} />
+            <Route path="/admin/programs" element={<AdminProgramSectionLandingPage />} />
+            <Route path="/admin/programs/cards" element={<AdminProgramSectionCardsPage />} />
+            <Route path="/admin/programs/cards/new" element={<AdminProgramSectionCardFormPage />} />
+            <Route path="/admin/programs/cards/:id/edit" element={<AdminProgramSectionCardFormPage />} />
           </Route>
         </Route>
 
