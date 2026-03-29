@@ -1,13 +1,27 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { isAuthenticated, getRolePath, getRole } from "../services/authService";
 import logo from "../assets/logo.jpg";
 import "./LandingPage.css";
 import { useActiveSection } from "../hooks/useActiveSection";
+import { getPublicAbout, getAboutCardImageUrl } from "../services/api/aboutSectionService";
 
 export default function LandingPage() {
   const loggedIn = isAuthenticated();
   const sections = ["home", "about", "programs", "gallery", "contact"];
   const activeId = useActiveSection(sections);
+
+  const [aboutData, setAboutData] = useState(null);
+  const [aboutLoading, setAboutLoading] = useState(true);
+  const [aboutError, setAboutError] = useState(false);
+  const [showAllCards, setShowAllCards] = useState(false);
+
+  useEffect(() => {
+    getPublicAbout()
+      .then((res) => setAboutData(res.data))
+      .catch(() => setAboutError(true))
+      .finally(() => setAboutLoading(false));
+  }, []);
 
   return (
     <div className="landing-page">
@@ -154,56 +168,91 @@ export default function LandingPage() {
       </section>
 
       {/* ==============================================================
-          ABOUT SECTION
+          ABOUT SECTION — dynamic, admin-managed
           ============================================================== */}
       <section className="mk-section-py mk-section-white" id="about">
         <div className="container">
+          {/* Heading & subtitle */}
           <div className="text-center mb-5">
-            <h2 className="mk-section-title">
-              About <span>MerryKids</span>
-            </h2>
-            <p
-              className="text-muted mt-2"
-              style={{ maxWidth: "560px", margin: "0.5rem auto 0" }}
-            >
-              Since 2010, we have been a trusted home-away-from-home for
-              children aged 6&nbsp;months to 5&nbsp;years, right in the heart of
-              our community.
-            </p>
+            {aboutLoading ? (
+              <>
+                <div className="mk-skeleton mx-auto mb-3" style={{ height: 36, maxWidth: 280, borderRadius: 8 }} />
+                <div className="mk-skeleton mx-auto" style={{ height: 20, maxWidth: 480, borderRadius: 6 }} />
+              </>
+            ) : aboutError ? (
+              <div className="text-center py-3">
+                <p className="text-danger small mb-0">Unable to load About section content.</p>
+              </div>
+            ) : (
+              <>
+                <h2 className="mk-section-title">
+                  {aboutData?.config?.sectionTitle || "About MerryKids"}
+                </h2>
+                <p
+                  className="text-muted mt-2"
+                  style={{ maxWidth: "560px", margin: "0.5rem auto 0" }}
+                >
+                  {aboutData?.config?.subtitle}
+                </p>
+              </>
+            )}
           </div>
 
-          <div className="row g-4">
-            <div className="col-md-4">
-              <div className="mk-highlight-card">
-                <span className="mk-card-icon">&#127968;</span>
-                <h5>Safe Environment</h5>
-                <p className="text-muted mb-0">
-                  Fully secured premises, trained caregivers, and daily health
-                  checks — so parents can leave with total peace of mind.
-                </p>
-              </div>
+          {/* Cards */}
+          {aboutLoading ? (
+            <div className="row g-4">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="col-md-4">
+                  <div className="mk-highlight-card">
+                    <div className="mk-skeleton mb-3" style={{ height: 180, borderRadius: 10 }} />
+                    <div className="mk-skeleton mb-2" style={{ height: 22, width: "60%" }} />
+                    <div className="mk-skeleton" style={{ height: 60, width: "100%" }} />
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="col-md-4">
-              <div className="mk-highlight-card">
-                <span className="mk-card-icon">&#128218;</span>
-                <h5>Engaging Learning</h5>
-                <p className="text-muted mb-0">
-                  Play-based curriculum that nurtures curiosity, creativity, and
-                  early academic foundations through hands-on activities.
-                </p>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="mk-highlight-card">
-                <span className="mk-card-icon">&#129309;</span>
-                <h5>Strong Community</h5>
-                <p className="text-muted mb-0">
-                  A supportive network of parents, teachers, and families
-                  working together for the growth of every child.
-                </p>
-              </div>
-            </div>
-          </div>
+          ) : aboutError ? null : (
+            <>
+              {(() => {
+                const allCards = aboutData?.cards ?? [];
+                const visibleCards = showAllCards ? allCards : allCards.slice(0, 3);
+                return (
+                  <>
+                    <div className="row g-4">
+                      {visibleCards.map((card) => (
+                        <div key={card.id} className="col-md-4">
+                          <div className="mk-highlight-card">
+                            {card.imageUrl ? (
+                              <img
+                                src={getAboutCardImageUrl(card.id)}
+                                alt={card.title}
+                                className="mk-about-card-img"
+                              />
+                            ) : (
+                              <div className="mk-about-card-img-placeholder" />
+                            )}
+                            <h5>{card.title}</h5>
+                            <p className="text-muted mb-0">{card.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {allCards.length > 3 && (
+                      <div className="text-center mt-4">
+                        <button
+                          className="btn btn-outline-primary rounded-pill px-4"
+                          onClick={() => setShowAllCards((prev) => !prev)}
+                        >
+                          {showAllCards ? "See Less" : "See More"}
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </>
+          )}
         </div>
       </section>
 

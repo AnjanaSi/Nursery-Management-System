@@ -165,6 +165,39 @@
   margin-bottom: 0.5rem;
 }
 
+/* Card image — responsive 16:9-ish with aspect-ratio for layout stability */
+.mk-about-card-img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--mk-radius) - 2px);
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+/* Placeholder shown when card has no image */
+.mk-about-card-img-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: var(--mk-surface-alt);
+  border-radius: calc(var(--mk-radius) - 2px);
+  margin-bottom: 1.25rem;
+}
+
+/* Skeleton shimmer for loading state */
+.mk-skeleton {
+  background: linear-gradient(90deg, var(--mk-surface-alt) 25%, #e8edf2 50%, var(--mk-surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: mk-shimmer 1.4s infinite;
+  border-radius: 6px;
+  display: block;
+}
+
+@keyframes mk-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ---- Programs section ---- */
 .mk-program-card {
   border: 1px solid var(--mk-border);

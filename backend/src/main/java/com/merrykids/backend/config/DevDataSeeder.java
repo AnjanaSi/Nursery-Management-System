@@ -3,6 +3,8 @@ package com.merrykids.backend.config;
 import com.merrykids.backend.entity.*;
 import com.merrykids.backend.repository.*;
 import com.merrykids.backend.util.AcademicYearUtil;
+import com.merrykids.backend.repository.AboutSectionConfigRepository;
+import com.merrykids.backend.repository.AboutCardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -30,6 +32,8 @@ public class DevDataSeeder implements CommandLineRunner {
     private final ParentContentViewRepository parentContentViewRepository;
     private final AdminProfileRepository adminProfileRepository;
     private final NurseryEventRepository nurseryEventRepository;
+    private final AboutSectionConfigRepository aboutSectionConfigRepository;
+    private final AboutCardRepository aboutCardRepository;
 
     @Override
     public void run(String... args) {
@@ -40,6 +44,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedPortalContent();
         seedAdminProfiles();
         seedEvents();
+        seedAboutSection();
     }
 
     private void seedUsers() {
@@ -602,5 +607,44 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Event seed data created: 3 events.");
+    }
+
+    private void seedAboutSection() {
+        if (aboutSectionConfigRepository.count() > 0) {
+            log.info("About section already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding about section data...");
+
+        aboutSectionConfigRepository.save(AboutSectionConfig.builder()
+                .id(1L)
+                .sectionTitle("About MerryKids")
+                .subtitle("Since 2010, we have been a trusted home-away-from-home for children " +
+                          "aged 6 months to 5 years, right in the heart of our community.")
+                .build());
+
+        aboutCardRepository.save(AboutCard.builder()
+                .title("Safe Environment")
+                .description("Fully secured premises, trained caregivers, and daily health checks — " +
+                             "so parents can leave with total peace of mind.")
+                .displayOrder(0)
+                .build());
+
+        aboutCardRepository.save(AboutCard.builder()
+                .title("Engaging Learning")
+                .description("Play-based curriculum that nurtures curiosity, creativity, and early " +
+                             "academic foundations through hands-on activities.")
+                .displayOrder(1)
+                .build());
+
+        aboutCardRepository.save(AboutCard.builder()
+                .title("Strong Community")
+                .description("A supportive network of parents, teachers, and families working together " +
+                             "for the growth of every child.")
+                .displayOrder(2)
+                .build());
+
+        log.info("About section seed data created: 1 config, 3 cards (upload images via admin portal).");
     }
 }

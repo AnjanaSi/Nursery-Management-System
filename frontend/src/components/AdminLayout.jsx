@@ -9,6 +9,7 @@ const menuItems = [
   { label: "Staff", path: "/admin/staff", icon: "\uD83D\uDC65" },
   { label: "Students", path: "/admin/students", icon: "\uD83C\uDF93" },
   { label: "Events", path: "/admin/events", icon: "\uD83D\uDCC5" },
+  { label: "About Section", path: "/admin/about-section", icon: "\u2139\uFE0F" },
   { label: "Admins", path: "/admin/admins", icon: "\uD83D\uDEE1\uFE0F" },
 ];
 
