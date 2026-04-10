@@ -38,6 +38,7 @@ public class DevDataSeeder implements CommandLineRunner {
     private final AboutCardRepository aboutCardRepository;
     private final ProgramSectionConfigRepository programSectionConfigRepository;
     private final ProgramCardRepository programCardRepository;
+    private final GallerySectionConfigRepository gallerySectionConfigRepository;
 
     @Override
     public void run(String... args) {
@@ -50,6 +51,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedEvents();
         seedAboutSection();
         seedProgramSection();
+        seedGallery();
     }
 
     private void seedUsers() {
@@ -692,5 +694,20 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Program section seed data created: 1 config, 3 cards (upload images via admin portal).");
+    }
+
+    private void seedGallery() {
+        if (gallerySectionConfigRepository.count() > 0) {
+            log.info("Gallery section already seeded, skipping.");
+            return;
+        }
+
+        gallerySectionConfigRepository.save(GallerySectionConfig.builder()
+                .id(1L)
+                .sectionTitle("Gallery")
+                .subtitle("A glimpse into our vibrant nursery life — moments of joy, learning, and friendship.")
+                .build());
+
+        log.info("Gallery section seed data created: 1 config (upload photos via admin portal).");
     }
 }

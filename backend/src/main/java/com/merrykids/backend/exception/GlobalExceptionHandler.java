@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 import java.util.stream.Collectors;
 
@@ -97,7 +98,15 @@ public class GlobalExceptionHandler {
             MaxUploadSizeExceededException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error("File size exceeds the maximum limit of 10MB"));
+                .body(ApiResponse.error("One or more files exceed the maximum allowed size. Each image must be 5MB or less."));
+    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMultipartException(
+            MultipartException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error("Upload failed. The request was too large or malformed. Ensure each photo is under 5MB and try again, or upload in smaller batches."));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

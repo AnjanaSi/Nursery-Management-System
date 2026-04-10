@@ -1,0 +1,148 @@
+/* ── Gallery Page ─────────────────────────────────────────────────────────── */
+
+.gallery-page {
+  min-height: 100vh;
+  background: var(--mk-surface);
+}
+
+/* ── Branded navbar ───────────────────────────────────────────────────────── */
+
+.gallery-navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--mk-border);
+  padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.gallery-navbar-logo {
+  height: 36px;
+  width: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.gallery-navbar-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--mk-blue);
+}
+
+@media (max-width: 480px) {
+  .gallery-navbar-name {
+    font-size: 0.8rem;
+  }
+}
+
+/* ── Page title/subtitle block ────────────────────────────────────────────── */
+
+.gallery-page-header {
+  background: #fff;
+  border-bottom: 1px solid var(--mk-border);
+  padding: 1.5rem 0 1.25rem;
+}
+
+.gallery-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--mk-blue);
+}
+
+.gallery-page-title span {
+  color: var(--mk-pink);
+}
+
+.gallery-page-subtitle {
+  color: var(--mk-text-muted);
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────────── */
+
+.gallery-grid-item {
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gallery-grid-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.15);
+}
+
+.gallery-grid-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Lightbox ─────────────────────────────────────────────────────────────── */
+
+.gallery-lightbox-body {
+  background: #111;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  position: relative;
+}
+
+.gallery-lightbox-img {
+  max-height: 75vh;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.gallery-lightbox-nav {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 50%;
+  transition: background 0.15s;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.gallery-lightbox-nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.gallery-lightbox-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.gallery-lightbox-counter {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* ── Skeleton placeholders ────────────────────────────────────────────────── */
+
+.gallery-skeleton {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s infinite;
+  border-radius: 10px;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

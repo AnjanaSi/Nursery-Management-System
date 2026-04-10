@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isAuthenticated, getRolePath, getRole } from "../services/authService";
 import logo from "../assets/logo.jpg";
 import "./LandingPage.css";
 import { useActiveSection } from "../hooks/useActiveSection";
 import { getPublicAbout, getAboutCardImageUrl } from "../services/api/aboutSectionService";
 import { getPublicPrograms, getProgramCardImageUrl } from "../services/api/programSectionService";
+import { getPublicGallery, getGalleryPhotoImageUrl } from "../services/api/gallerySectionService";
 
 export default function LandingPage() {
   const loggedIn = isAuthenticated();
+  const navigate = useNavigate();
   const sections = ["home", "about", "programs", "gallery", "contact"];
   const activeId = useActiveSection(sections);
 
@@ -22,6 +24,10 @@ export default function LandingPage() {
   const [programError, setProgramError] = useState(false);
   const [showAllPrograms, setShowAllPrograms] = useState(false);
 
+  const [galleryData, setGalleryData] = useState(null);
+  const [galleryLoading, setGalleryLoading] = useState(true);
+  const [galleryError, setGalleryError] = useState(false);
+
   useEffect(() => {
     getPublicAbout()
       .then((res) => setAboutData(res.data))
@@ -31,6 +37,10 @@ export default function LandingPage() {
       .then((res) => setProgramData(res.data))
       .catch(() => setProgramError(true))
       .finally(() => setProgramLoading(false));
+    getPublicGallery()
+      .then((res) => setGalleryData(res.data))
+      .catch(() => setGalleryError(true))
+      .finally(() => setGalleryLoading(false));
   }, []);
 
   return (
@@ -364,36 +374,76 @@ export default function LandingPage() {
       <section className="mk-section-py mk-section-white" id="gallery">
         <div className="container">
           <div className="text-center mb-5">
-            <h2 className="mk-section-title">Gallery</h2>
-            <p className="text-muted mt-2">
-              A glimpse into our vibrant nursery life.
-            </p>
+            <h2 className="mk-section-title">
+              {galleryData?.config?.sectionTitle ?? "Gallery"}
+            </h2>
+            {(galleryData?.config?.subtitle || !galleryLoading) && (
+              <p className="text-muted mt-2">
+                {galleryData?.config?.subtitle ?? "A glimpse into our vibrant nursery life."}
+              </p>
+            )}
           </div>
 
-          <div className="row g-3">
-            {[
-              { label: "Arts & Crafts", variant: "v1" },
-              { label: "Story Time", variant: "v2" },
-              { label: "Outdoor Play", variant: "v3" },
-              { label: "Music & Dance", variant: "v2" },
-              { label: "Sensory Play", variant: "v1" },
-              { label: "Garden Club", variant: "v3" },
-            ].map(({ label, variant }) => (
-              <div key={label} className="col-6 col-md-4">
-                <div className={`mk-gallery-item ${variant}`}>
-                  &#128247; {label}
+          {galleryLoading ? (
+            /* Skeleton */
+            <div className="row g-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="col-4 col-md-3 col-lg-2">
+                  <div
+                    style={{
+                      width: "100%",
+                      aspectRatio: "1/1",
+                      borderRadius: 10,
+                      background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+                      backgroundSize: "200% 100%",
+                      animation: "skeleton-shimmer 1.4s infinite",
+                    }}
+                  />
                 </div>
+              ))}
+            </div>
+          ) : galleryError ? (
+            <p className="text-center text-muted">Unable to load gallery right now.</p>
+          ) : galleryData?.photos?.length === 0 ? (
+            <p className="text-center text-muted">No photos yet — check back soon.</p>
+          ) : (
+            <>
+              <div className="row g-3">
+                {galleryData.photos.slice(0, 6).map((photo, idx) => (
+                  <div key={photo.id} className="col-4 col-md-3 col-lg-2">
+                    <div
+                      className="mk-gallery-photo-item"
+                      onClick={() => navigate("/gallery")}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Gallery photo ${idx + 1}`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") navigate("/gallery");
+                      }}
+                    >
+                      <img
+                        src={getGalleryPhotoImageUrl(photo.id)}
+                        alt={`Gallery photo ${idx + 1}`}
+                        className="mk-gallery-photo-img"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <p
-            className="text-center text-muted mt-4"
-            style={{ fontSize: "0.875rem" }}
-          >
-            Photo gallery coming soon — real photos will replace these
-            placeholders.
-          </p>
+              {galleryData.photos.length > 6 && (
+                <div className="text-center mt-4">
+                  <button
+                    className="btn btn-outline-primary rounded-pill px-4"
+                    onClick={() => navigate("/gallery")}
+                  >
+                    See More
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 

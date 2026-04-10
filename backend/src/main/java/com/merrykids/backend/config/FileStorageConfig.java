@@ -25,6 +25,7 @@ public class FileStorageConfig {
         Path teacherContentDir = Paths.get(uploadDir, "teacher-content", "attachments");
         Path eventPhotosDir = Paths.get(uploadDir, "events", "photos");
         Path aboutImagesDir = Paths.get(uploadDir, "about", "images");
+        Path galleryPhotosDir = Paths.get(uploadDir, "gallery", "photos");
 
         Files.createDirectories(announcementsDir);
         Files.createDirectories(submissionsDir);
@@ -32,7 +33,8 @@ public class FileStorageConfig {
         Files.createDirectories(teacherContentDir);
         Files.createDirectories(eventPhotosDir);
         Files.createDirectories(aboutImagesDir);
+        Files.createDirectories(galleryPhotosDir);
 
-        log.info("Upload directories created: {}, {}, {}, {}, {}, {}", announcementsDir, submissionsDir, staffPhotosDir, teacherContentDir, eventPhotosDir, aboutImagesDir);
+        log.info("Upload directories created: {}, {}, {}, {}, {}, {}, {}", announcementsDir, submissionsDir, staffPhotosDir, teacherContentDir, eventPhotosDir, aboutImagesDir, galleryPhotosDir);
     }
 }

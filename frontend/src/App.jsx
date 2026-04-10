@@ -16,6 +16,10 @@ import AdminAboutSectionCardFormPage from "./pages/AdminAboutSectionCardFormPage
 import AdminProgramSectionLandingPage from "./pages/AdminProgramSectionLandingPage";
 import AdminProgramSectionCardsPage from "./pages/AdminProgramSectionCardsPage";
 import AdminProgramSectionCardFormPage from "./pages/AdminProgramSectionCardFormPage";
+import GalleryPage from "./pages/GalleryPage";
+import AdminGallerySectionLandingPage from "./pages/AdminGallerySectionLandingPage";
+import AdminGallerySectionPhotosPage from "./pages/AdminGallerySectionPhotosPage";
+import AdminGalleryPhotoUploadPage from "./pages/AdminGalleryPhotoUploadPage";
 import AdminAdmissionsPage from "./pages/AdminAdmissionsPage";
 import AdminsLandingPage from "./pages/AdminsLandingPage";
 import AdminsAddPage from "./pages/AdminsAddPage";
@@ -49,6 +53,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/admissions" element={<AdmissionsPage />} />
         <Route path="/events" element={<PublicEventsPage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -87,6 +92,9 @@ function App() {
             <Route path="/admin/programs/cards" element={<AdminProgramSectionCardsPage />} />
             <Route path="/admin/programs/cards/new" element={<AdminProgramSectionCardFormPage />} />
             <Route path="/admin/programs/cards/:id/edit" element={<AdminProgramSectionCardFormPage />} />
+            <Route path="/admin/gallery" element={<AdminGallerySectionLandingPage />} />
+            <Route path="/admin/gallery/photos" element={<AdminGallerySectionPhotosPage />} />
+            <Route path="/admin/gallery/photos/upload" element={<AdminGalleryPhotoUploadPage />} />
           </Route>
         </Route>
 
