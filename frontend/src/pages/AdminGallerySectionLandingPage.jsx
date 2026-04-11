@@ -58,9 +58,9 @@ export default function AdminGallerySectionLandingPage() {
 
       <button
         className="btn btn-outline-secondary rounded-3"
-        onClick={() => navigate("/admin")}
+        onClick={() => navigate("/admin/public-site")}
       >
-        &larr; Back to Dashboard
+        &larr; Back to Public Site
       </button>
     </div>
   );

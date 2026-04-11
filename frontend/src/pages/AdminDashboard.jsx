@@ -16,13 +16,6 @@ const cards = [
     disabled: false,
   },
   {
-    title: "Admissions",
-    description: "Review pending admission applications.",
-    path: "/admin/admissions",
-    icon: "\uD83D\uDCCB",
-    disabled: false,
-  },
-  {
     title: "Admin Management",
     description: "Manage admin profiles and system access.",
     path: "/admin/admins",
@@ -30,10 +23,10 @@ const cards = [
     disabled: false,
   },
   {
-    title: "Events Management",
-    description: "Manage public events and photo galleries.",
-    path: "/admin/events",
-    icon: "\uD83D\uDCC5",
+    title: "Public Site Management",
+    description: "Manage all public-facing website content: About, Programs, Gallery, Contact, Events, and Admissions.",
+    path: "/admin/public-site",
+    icon: "\uD83C\uDF10",
     disabled: false,
   },
 ];

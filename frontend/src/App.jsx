@@ -7,6 +7,7 @@ import ChangePasswordPage from "./pages/ChangePasswordPage";
 import AdmissionsPage from "./pages/AdmissionsPage";
 import PublicEventsPage from "./pages/PublicEventsPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import PublicSiteDashboard from "./pages/PublicSiteDashboard";
 import AdminEventsLandingPage from "./pages/AdminEventsLandingPage";
 import AdminEventsListPage from "./pages/AdminEventsListPage";
 import AdminEventFormPage from "./pages/AdminEventFormPage";
@@ -20,6 +21,7 @@ import GalleryPage from "./pages/GalleryPage";
 import AdminGallerySectionLandingPage from "./pages/AdminGallerySectionLandingPage";
 import AdminGallerySectionPhotosPage from "./pages/AdminGallerySectionPhotosPage";
 import AdminGalleryPhotoUploadPage from "./pages/AdminGalleryPhotoUploadPage";
+import AdminContactSectionPage from "./pages/AdminContactSectionPage";
 import AdminAdmissionsPage from "./pages/AdminAdmissionsPage";
 import AdminsLandingPage from "./pages/AdminsLandingPage";
 import AdminsAddPage from "./pages/AdminsAddPage";
@@ -43,6 +45,7 @@ import TeacherHomeworkPage from "./pages/TeacherHomeworkPage";
 import TeacherProfilePage from "./pages/TeacherProfilePage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminLayout from "./components/AdminLayout";
+import PublicSiteLayout from "./components/PublicSiteLayout";
 import TeacherLayout from "./components/TeacherLayout";
 
 function App() {
@@ -61,11 +64,12 @@ function App() {
         {/* Authenticated - force password change */}
         <Route path="/change-password" element={<ChangePasswordPage />} />
 
-        {/* Admin routes with sidebar layout */}
+        {/* Admin routes */}
         <Route element={<ProtectedRoute allowedRole="ADMIN" />}>
+
+          {/* Main admin area */}
           <Route element={<AdminLayout />}>
             <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/admissions" element={<AdminAdmissionsPage />} />
             <Route path="/admin/admins" element={<AdminsLandingPage />} />
             <Route path="/admin/admins/new" element={<AdminsAddPage />} />
             <Route path="/admin/admins/list" element={<AdminsListPage />} />
@@ -80,6 +84,12 @@ function App() {
             <Route path="/admin/students/year-transition" element={<YearTransitionPage />} />
             <Route path="/admin/students/:id/edit" element={<StudentFormPage />} />
             <Route path="/admin/students/:id" element={<StudentDetailPage />} />
+          </Route>
+
+          {/* Public Site Management area — own sidebar layout */}
+          <Route element={<PublicSiteLayout />}>
+            <Route path="/admin/public-site" element={<PublicSiteDashboard />} />
+            <Route path="/admin/admissions" element={<AdminAdmissionsPage />} />
             <Route path="/admin/events" element={<AdminEventsLandingPage />} />
             <Route path="/admin/events/new" element={<AdminEventFormPage />} />
             <Route path="/admin/events/list" element={<AdminEventsListPage />} />
@@ -95,7 +105,9 @@ function App() {
             <Route path="/admin/gallery" element={<AdminGallerySectionLandingPage />} />
             <Route path="/admin/gallery/photos" element={<AdminGallerySectionPhotosPage />} />
             <Route path="/admin/gallery/photos/upload" element={<AdminGalleryPhotoUploadPage />} />
+            <Route path="/admin/contact" element={<AdminContactSectionPage />} />
           </Route>
+
         </Route>
 
         {/* Teacher routes with sidebar layout */}

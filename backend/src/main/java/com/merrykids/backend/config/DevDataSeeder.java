@@ -39,6 +39,8 @@ public class DevDataSeeder implements CommandLineRunner {
     private final ProgramSectionConfigRepository programSectionConfigRepository;
     private final ProgramCardRepository programCardRepository;
     private final GallerySectionConfigRepository gallerySectionConfigRepository;
+    private final ContactSectionConfigRepository contactSectionConfigRepository;
+    private final ContactItemRepository contactItemRepository;
 
     @Override
     public void run(String... args) {
@@ -52,6 +54,7 @@ public class DevDataSeeder implements CommandLineRunner {
         seedAboutSection();
         seedProgramSection();
         seedGallery();
+        seedContactSection();
     }
 
     private void seedUsers() {
@@ -709,5 +712,51 @@ public class DevDataSeeder implements CommandLineRunner {
                 .build());
 
         log.info("Gallery section seed data created: 1 config (upload photos via admin portal).");
+    }
+
+    private void seedContactSection() {
+        if (contactSectionConfigRepository.count() > 0) {
+            log.info("Contact section already seeded, skipping.");
+            return;
+        }
+
+        log.info("Seeding contact section data...");
+
+        contactSectionConfigRepository.save(ContactSectionConfig.builder()
+                .id(1L)
+                .sectionTitle("Get in Touch")
+                .subtitle("We\u2019d love to hear from you. Visit us or reach out any time.")
+                .mapEmbedUrl("https://www.google.com/maps?q=6.234331,80.195276&z=16&output=embed")
+                .build());
+
+        contactItemRepository.save(ContactItem.builder()
+                .itemType(ContactItemType.ADDRESS)
+                .title("Address")
+                .content("123 Nursery Lane,\nSunshine District,\nColombo, Sri Lanka")
+                .displayOrder(0)
+                .build());
+
+        contactItemRepository.save(ContactItem.builder()
+                .itemType(ContactItemType.PHONE)
+                .title("Phone")
+                .content("+94 914 387 117")
+                .displayOrder(1)
+                .build());
+
+        contactItemRepository.save(ContactItem.builder()
+                .itemType(ContactItemType.EMAIL)
+                .title("Email")
+                .content("hello@merrykids.lk")
+                .displayOrder(2)
+                .build());
+
+        contactItemRepository.save(ContactItem.builder()
+                .itemType(ContactItemType.OPENING_HOURS)
+                .title("Opening Hours")
+                .content("Mon \u2013 Fri: 7:30 AM \u2013 6:00 PM\nSaturday: 8:00 AM \u2013 1:00 PM")
+                .displayOrder(3)
+                .build());
+
+        log.info("Contact section seed data created: 1 config, 4 items.");
     }
 }

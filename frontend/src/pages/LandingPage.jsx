@@ -7,6 +7,7 @@ import { useActiveSection } from "../hooks/useActiveSection";
 import { getPublicAbout, getAboutCardImageUrl } from "../services/api/aboutSectionService";
 import { getPublicPrograms, getProgramCardImageUrl } from "../services/api/programSectionService";
 import { getPublicGallery, getGalleryPhotoImageUrl } from "../services/api/gallerySectionService";
+import { getPublicContact } from "../services/api/contactSectionService";
 
 export default function LandingPage() {
   const loggedIn = isAuthenticated();
@@ -28,6 +29,10 @@ export default function LandingPage() {
   const [galleryLoading, setGalleryLoading] = useState(true);
   const [galleryError, setGalleryError] = useState(false);
 
+  const [contactData, setContactData] = useState(null);
+  const [contactLoading, setContactLoading] = useState(true);
+  const [contactError, setContactError] = useState(false);
+
   useEffect(() => {
     getPublicAbout()
       .then((res) => setAboutData(res.data))
@@ -41,6 +46,10 @@ export default function LandingPage() {
       .then((res) => setGalleryData(res.data))
       .catch(() => setGalleryError(true))
       .finally(() => setGalleryLoading(false));
+    getPublicContact()
+      .then((res) => setContactData(res.data))
+      .catch(() => setContactError(true))
+      .finally(() => setContactLoading(false));
   }, []);
 
   return (
@@ -452,88 +461,80 @@ export default function LandingPage() {
           ============================================================== */}
       <section className="mk-section-py mk-section-surface" id="contact">
         <div className="container">
-          <div className="text-center mb-5">
-            <h2 className="mk-section-title">
-              Get in <span>Touch</span>
-            </h2>
-            <p className="text-muted mt-2">
-              We&apos;d love to hear from you. Visit us or reach out any time.
-            </p>
-          </div>
+          {contactLoading ? (
+            <div className="text-center py-5">
+              <span className="spinner-border text-primary" />
+            </div>
+          ) : contactError || !contactData ? (
+            <div className="text-center py-5 text-muted">
+              <p>Unable to load contact information. Please try again later.</p>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-5">
+                <h2 className="mk-section-title">
+                  {contactData.config.sectionTitle}
+                </h2>
+                <p className="text-muted mt-2">{contactData.config.subtitle}</p>
+              </div>
 
-          <div className="row g-4">
-            <div className="col-sm-6 col-lg-3">
-              <div className="mk-contact-card">
-                <span className="mk-contact-icon">&#128205;</span>
-                <h6>Address</h6>
-                <p>
-                  123 Nursery Lane,
-                  <br />
-                  Sunshine District,
-                  <br />
-                  Colombo, Sri Lanka
-                </p>
+              <div className="row g-4">
+                {contactData.items.map((item) => (
+                  <div key={item.id} className="col-sm-6 col-lg-3">
+                    <div className="mk-contact-card">
+                      <span className="mk-contact-icon">
+                        {item.itemType === "ADDRESS" && "\uD83D\uDCCD"}
+                        {item.itemType === "PHONE" && "\uD83D\uDCDE"}
+                        {item.itemType === "EMAIL" && "\u2709\uFE0F"}
+                        {item.itemType === "OPENING_HOURS" && "\uD83D\uDD51"}
+                      </span>
+                      <h6>{item.title}</h6>
+                      {item.itemType === "PHONE" ? (
+                        <p>
+                          <a
+                            href={`tel:${item.content.replace(/\s/g, "")}`}
+                            className="text-decoration-none"
+                            style={{ color: "var(--mk-blue)" }}
+                          >
+                            {item.content}
+                          </a>
+                        </p>
+                      ) : item.itemType === "EMAIL" ? (
+                        <p>
+                          <a
+                            href={`mailto:${item.content}`}
+                            className="text-decoration-none"
+                            style={{ color: "var(--mk-blue)" }}
+                          >
+                            {item.content}
+                          </a>
+                        </p>
+                      ) : (
+                        <p style={{ whiteSpace: "pre-line" }}>{item.content}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-            <div className="col-sm-6 col-lg-3">
-              <div className="mk-contact-card">
-                <span className="mk-contact-icon">&#128222;</span>
-                <h6>Phone</h6>
-                <p>
-                  <a
-                    href="tel:+94914387117"
-                    className="text-decoration-none"
-                    style={{ color: "var(--mk-blue)" }}
-                  >
-                    +94 914 387 117
-                  </a>
-                </p>
-              </div>
-            </div>
-            <div className="col-sm-6 col-lg-3">
-              <div className="mk-contact-card">
-                <span className="mk-contact-icon">&#9993;</span>
-                <h6>Email</h6>
-                <p>
-                  <a
-                    href="mailto:hello@merrykids.lk"
-                    className="text-decoration-none"
-                    style={{ color: "var(--mk-blue)" }}
-                  >
-                    hello@merrykids.lk
-                  </a>
-                </p>
-              </div>
-            </div>
-            <div className="col-sm-6 col-lg-3">
-              <div className="mk-contact-card">
-                <span className="mk-contact-icon">&#128337;</span>
-                <h6>Opening Hours</h6>
-                <p>
-                  Mon – Fri: 7:30 AM – 6:00 PM
-                  <br />
-                  Saturday: 8:00 AM – 1:00 PM
-                </p>
-              </div>
-            </div>
-          </div>
 
-          <div className="row mt-4">
-            <div className="col">
-              <div className="mk-map-embed">
-                <div className="ratio ratio-21x9 rounded-4 overflow-hidden border">
-                  <iframe
-                    src="https://www.google.com/maps?q=6.234331,80.195276&z=16&output=embed"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Merry Kids International Montessori Location"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                  />
+              <div className="row mt-4">
+                <div className="col">
+                  <div className="mk-map-embed">
+                    <div className="ratio ratio-21x9 rounded-4 overflow-hidden border">
+                      <iframe
+                        src={contactData.config.mapEmbedUrl}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="Merry Kids International Montessori Location"
+                        style={{ border: 0 }}
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </section>
 
